@@ -1,0 +1,19 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
+ */
+package com.blazartech.scrabble.data.app.access;
+
+import com.blazartech.scrabble.data.app.Game;
+import com.blazartech.scrabble.data.app.GamePlayer;
+import java.util.Collection;
+
+/**
+ *
+ * @author scott
+ */
+public interface ScrabbleDataAccess {
+    
+    public Game getGame(int gameId);
+    public Collection<GamePlayer> getPlayersForGame(int gameId);
+}
