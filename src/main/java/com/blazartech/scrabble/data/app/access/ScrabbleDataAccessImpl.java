@@ -200,4 +200,17 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
 
         playerRepository.save(pe);
     }
+    
+    @Override
+    public GamePlayer getPlayerForGame(int gameId, int playerId) {
+        log.info("getting player {} for game {}", playerId, gameId);
+        
+        Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findByGameAndPlayer(gameId, playerId);
+        if (gamePlayers == null || gamePlayers.isEmpty()) {
+            return null;
+        } else {
+            GamePlayerEntity gpe = gamePlayers.iterator().next();
+            return buildGamePlayer(gpe);
+        }
+    }
 }

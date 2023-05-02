@@ -53,18 +53,14 @@ public class GameCompletePABImpl implements GameCompletePAB {
         int winner = highestScorePlayer.getPlayerId();
         g.setWinnerPlayerId(winner);
         
-        // for each player, is this their highest score?  Realllly ugly code!
+        // for each player, is this their highest score?  
         Collection<GamePlayer> players = dal.getPlayersForGame(g.getId());
         for (GamePlayer player : players) {
             int score = player.getScore();
             Player p = dal.getPlayer(player.getPlayerId());
             if (p.getHighGameId() != null) {
-                Collection<GamePlayer> highGamePlayers = dal.getPlayersForGame(p.getHighGameId());
-                GamePlayer playerHighGamePlayer = highGamePlayers.stream()
-                        .filter(pp -> pp.getPlayerId() == pp.getPlayerId())
-                        .findFirst()
-                        .orElse(null);
-                if (score > playerHighGamePlayer.getScore()) {
+                GamePlayer highGamePlayer = dal.getPlayerForGame(p.getHighGameId(), p.getId());
+                if (score > highGamePlayer.getScore()) {
                     // new high score
                     p.setHighGameId(g.getId());
                     dal.updatePlayer(p);

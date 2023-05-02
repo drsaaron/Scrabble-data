@@ -20,7 +20,10 @@ public interface ScrabbleDataAccess {
     public Game getGame(int gameId);
     
     public Collection<GamePlayer> getPlayersForGame(int gameId);
+    public GamePlayer getPlayerForGame(int gameId, int playerId);
     
     public Player getPlayer(int playerId);
     public void updatePlayer(Player player);
+    
+    
 }

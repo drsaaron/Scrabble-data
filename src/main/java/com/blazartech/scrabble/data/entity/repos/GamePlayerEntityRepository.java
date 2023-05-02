@@ -19,4 +19,5 @@ import org.springframework.stereotype.Repository;
 public interface GamePlayerEntityRepository extends JpaRepository<GamePlayerEntity, Integer>, JpaSpecificationExecutor<GamePlayerEntity> {
     
     public Collection<GamePlayerEntity> findByGameId(@Param("gameId") int gameId);
+    public Collection<GamePlayerEntity> findByGameAndPlayer(@Param("gameId") int gameId, @Param("playerId") int playerId);
 }
