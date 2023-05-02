@@ -21,6 +21,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,43 +49,43 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Transactional
 @Slf4j
 public class GameCompletePABImplTest {
-    
+
     @Configuration
     @PropertySource("classpath:unittest.properties")
     static class GameCompletePABImplTestConfiguration {
-        
+
         @Bean
         public GameCompletePABImpl instance() {
             return new GameCompletePABImpl();
         }
-        
+
         @Bean
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
         }
     }
-    
+
     @Autowired
     private GameCompletePABImpl instance;
-    
+
     @Autowired
     private ScrabbleDataAccess dal;
-    
+
     public GameCompletePABImplTest() {
     }
-    
+
     @BeforeAll
     public static void setUpClass() {
     }
-    
+
     @AfterAll
     public static void tearDownClass() {
     }
-    
+
     @BeforeEach
     public void setUp() {
     }
-    
+
     @AfterEach
     public void tearDown() {
     }
@@ -104,23 +105,26 @@ public class GameCompletePABImplTest {
         assertNull(game.getWinnerPlayerId());
         assertNull(game.getEndTimestamp());
         assertEquals(GameStatus.Playing, game.getGameStatus());
-        
+
         players.stream()
                 .map(p -> dal.getPlayer(p.getPlayerId()))
                 .forEach(p -> assertNull(p.getHighGameId()));
-        
+
         instance.markGameComplete(game);
-       
+
         assertNotNull(game.getWinnerPlayerId());
         assertEquals(3, game.getWinnerPlayerId().intValue());
         assertNotNull(game.getEndTimestamp());
         assertEquals(GameStatus.Complete, game.getGameStatus());
-        
+
         // high scores should be updated
         players = dal.getPlayersForGame(gameId);
         players.stream()
                 .map(p -> dal.getPlayer(p.getPlayerId()))
-                .forEach(p -> { assertNotNull(p.getHighGameId()); assertEquals(gameId, p.getHighGameId().intValue()); });
+                .forEach(p -> {
+                    assertNotNull(p.getHighGameId());
+                    assertEquals(gameId, p.getHighGameId().intValue());
+                });
     }
 
     /**
@@ -137,5 +141,20 @@ public class GameCompletePABImplTest {
         assertNotNull(result);
         assertEquals(3, result.getPlayerId());
     }
-    
+
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testMarkGameComplete_invalidState() {
+        log.info("markGameComplete_invalidState");
+
+        assertThrows(IllegalStateException.class,
+                () -> {
+                    int gameId = 2;
+
+                    Game game = dal.getGame(gameId);
+                    game.setGameStatus(GameStatus.Complete);
+                    instance.markGameComplete(game);
+                }
+        );
+    }
 }

@@ -38,7 +38,7 @@ public class GameCompletePABImpl implements GameCompletePAB {
         // sanity check on data.  Status should indicate playing, but no
         // completion date.
         if (g.getGameStatus() != GameStatus.Playing) {
-            throw new IllegalStateException("game is not marked complete");
+            throw new IllegalStateException("game is not in progress");
         }
         if (g.getEndTimestamp() != null) {
             throw new IllegalStateException("game is already marked complete");
