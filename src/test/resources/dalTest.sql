@@ -8,10 +8,17 @@
  */
 
 insert into Game(GameId, StsCde) values(1, 'P');
-insert into Game(GameId, StsCde) values(2, 'C');
+insert into Game(GameId, StsCde) values(2, 'P');
 
 insert into Player(PlayerId, NameTxt) values(1, 'Scott');
 insert into Player(PlayerId, NameTxt) values(2, 'Roberta');
+insert into Player(PlayerId, NameTxt) values(3, 'Henrietta');
+insert into Player(PlayerId, NameTxt) values(4, 'Pauline');
 
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(1, 1, 1, 2);
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(2, 1, 2, 1);
+
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(3, 2, 1, 2, 500);
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(4, 2, 2, 1, 1500);
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(5, 2, 3, 4, 2500);
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(6, 2, 4, 3, 250);

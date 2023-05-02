@@ -155,7 +155,7 @@ public class GameEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "com.blazartech.scrabble.data.entity.Game[ gameId=" + gameId + " ]";
+        return "GameEntity{" + "gameId=" + gameId + ", stsCde=" + stsCde + ", startDtm=" + startDtm + ", endDtm=" + endDtm + ", playerCollection=" + playerCollection + ", winnerId=" + winnerId + ", gamePlayerCollection=" + gamePlayerCollection + '}';
     }
     
 }

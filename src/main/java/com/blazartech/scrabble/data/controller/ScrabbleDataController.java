@@ -4,7 +4,12 @@
  */
 package com.blazartech.scrabble.data.controller;
 
+import com.blazartech.scrabble.data.app.Game;
+import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -15,4 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ScrabbleDataController {
     
+    @Autowired
+    private ScrabbleDataAccess dal;
+    
+    @PostMapping("/game")
+    public Game addGame(@RequestBody Game g) {
+        log.info("adding game {}", g);
+        
+        g = dal.addGame(g);
+        return g;
+    }
 }

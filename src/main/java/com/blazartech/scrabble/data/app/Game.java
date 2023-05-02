@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class Game {
     
-    private int id;
+    private Integer id;
     private GameStatus gameStatus;
     private Date startTimestamp;
     private Date endTimestamp;

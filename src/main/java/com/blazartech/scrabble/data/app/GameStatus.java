@@ -26,4 +26,8 @@ public enum GameStatus {
         
         throw new IllegalArgumentException("no value found for " + dbValue);
     }
+    
+    public char getDBValue() {
+        return dbValue;
+    }
 }

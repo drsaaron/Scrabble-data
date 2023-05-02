@@ -16,6 +16,7 @@ import com.blazartech.scrabble.data.entity.repos.GamePlayerRoundEntityRepository
 import com.blazartech.scrabble.data.entity.repos.PlayerEntityRepository;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -68,12 +69,65 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         Optional<GameEntity> ge = gameRepository.findById(gameId);
         return buildGame(ge);
     }
+    
+    private GameEntity buildGameEntity(Game g) {
+        GameEntity ge = new GameEntity();
+        ge.setEndDtm(g.getEndTimestamp());
+        ge.setStartDtm(g.getStartTimestamp());
+        ge.setStsCde(g.getGameStatus().getDBValue());
+        ge.setGameId(g.getId());
+        
+        return ge;
+    }
+    
+    @Override
+    public Game addGame(Game g) {
+        log.info("adding game {}", g);
+        
+        // sanity chekc that ID is not set.
+        if (g.getId() != null) {
+            throw new IllegalStateException("attemping to add a game with a set ID");
+        }
+        
+        // sanity check on dates
+        if (g.getStartTimestamp() != null) {
+            throw new IllegalStateException("start date must be null for new game");
+        }
+        if (g.getEndTimestamp() != null) {
+            throw new IllegalStateException("end date must be null for new game");
+        }
+        
+        GameEntity ge = buildGameEntity(g);
+
+        // set the create timestamp, I'm not sure why this is needed, but for now....    
+        ge.setStartDtm(new Date());
+        
+        // save
+        gameRepository.save(ge);
+        log.info("saved game {}", ge);
+        
+        // get the updated data
+        return buildGame(Optional.of(ge));
+    }
+    
+    @Override
+    public void updateGame(Game g) {
+        log.info("updating game {}", g);
+        
+        // sanity chekc that ID is set.
+        if (g.getId() == null) {
+            throw new IllegalStateException("attemping to update a game without a set ID");
+        }
+        
+        GameEntity ge = buildGameEntity(g);
+        gameRepository.save(ge);
+    }
 
     private GamePlayer buildGamePlayer(GamePlayerEntity gpe) {
         GamePlayer player = new GamePlayer();
         player.setGameId(gpe.getGameId().getGameId());
         player.setId(gpe.getGamePlayerId());
-        player.setPlayerId(gpe.getGamePlayerId());
+        player.setPlayerId(gpe.getPlayerId().getPlayerId());
         player.setScore(gpe.getScoreCnt());
         player.setSequenceNumber(gpe.getOrderSeq());
         return player;

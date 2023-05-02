@@ -2,23 +2,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
  */
-package com.blazartech.scrabble.data.app.access;
+package com.blazartech.scrabble.data.process;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
+import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.data.app.access.ScrabbleDataAccessImpl;
 import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
 import jakarta.transaction.Transactional;
-import java.util.Collection;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-    ScrabbleDataAccessImplTest.ScrabbleDataAccessImplTestConfiguration.class,
+    GameCompletePABImplTest.GameCompletePABImplTestConfiguration.class,
     TestEntityManagerConfiguration.class,
     TestDataSourceConfiguration.class,
     JpaVendorAdapterConfig.class,
@@ -45,22 +46,30 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 })
 @Transactional
 @Slf4j
-public class ScrabbleDataAccessImplTest {
+public class GameCompletePABImplTest {
     
     @Configuration
     @PropertySource("classpath:unittest.properties")
-    static class ScrabbleDataAccessImplTestConfiguration {
+    static class GameCompletePABImplTestConfiguration {
         
         @Bean
-        public ScrabbleDataAccessImpl instance() {
+        public GameCompletePABImpl instance() {
+            return new GameCompletePABImpl();
+        }
+        
+        @Bean
+        public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
         }
     }
     
     @Autowired
-    private ScrabbleDataAccessImpl instance;
+    private GameCompletePABImpl instance;
     
-    public ScrabbleDataAccessImplTest() {
+    @Autowired
+    private ScrabbleDataAccess dal;
+    
+    public GameCompletePABImplTest() {
     }
     
     @BeforeAll
@@ -80,69 +89,41 @@ public class ScrabbleDataAccessImplTest {
     }
 
     /**
-     * Test of getGame method, of class ScrabbleDataAccessImpl.
+     * Test of markGameComplete method, of class GameCompletePABImpl.
      */
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testGetGame() {
-        log.info("getGame");
-        int gameId = 1;
+    public void testMarkGameComplete() {
+        log.info("markGameComplete");
 
-        Game result = instance.getGame(gameId);
-        assertEquals(GameStatus.Playing, result.getGameStatus());
+        int gameId = 2;
+        Game game = dal.getGame(gameId);
+
+        assertNull(game.getWinnerPlayerId());
+        assertNull(game.getEndTimestamp());
+        assertEquals(GameStatus.Playing, game.getGameStatus());
+        
+        instance.markGameComplete(game);
+       
+        assertNotNull(game.getWinnerPlayerId());
+        assertEquals(3, game.getWinnerPlayerId().intValue());
+        assertNotNull(game.getEndTimestamp());
+        assertEquals(GameStatus.Complete, game.getGameStatus());
     }
 
     /**
-     * Test of getPlayersForGame method, of class ScrabbleDataAccessImpl.
+     * Test of findHighestScorePlayer method, of class GameCompletePABImpl.
      */
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testGetPlayersForGame() {
-        log.info("getPlayersForGame");
-        int gameId = 1;
+    public void testFindHighestScorePlayer() {
+        log.info("findHighestScorePlayer");
 
-        Collection<GamePlayer> result = instance.getPlayersForGame(gameId);
-        assertEquals(2, result.size());
-        
-        // the first player should be player 2 according to the sequencing.
-        GamePlayer firstPlayer = result.iterator().next();
-        assertEquals(2, firstPlayer.getPlayerId());
-        assertEquals(1, firstPlayer.getSequenceNumber());
+        int gameId = 2;
+
+        GamePlayer result = instance.findHighestScorePlayer(gameId);
+        assertNotNull(result);
+        assertEquals(3, result.getPlayerId());
     }
     
-    @Test
-    @Sql("classpath:dalAddTest.sql")
-    public void testAddGame() {
-        log.info("addGame");
-        
-        Game g = new Game();
-        g.setGameStatus(GameStatus.Playing);
-        
-        Game newGame = instance.addGame(g);
-        
-        assertNotNull(newGame.getId());
-        assertNotNull(newGame.getStartTimestamp());
-    }
-    
-    @Test
-    @Sql("classpath:dalTest.sql")
-    public void testUpdateGame() {
-        log.info("addGame");
-        
-        int gameNumber = 1;
-        
-        Game g = instance.getGame(gameNumber);
-
-        g.setGameStatus(GameStatus.Complete);
-        g.setEndTimestamp(new Date());
-        
-        instance.updateGame(g);
-        
-        assertNotNull(g.getId());
-        assertNotNull(g.getStartTimestamp());
-        
-        Game g2 = instance.getGame(gameNumber);
-        assertNotNull(g2.getEndTimestamp());
-    }
-
 }

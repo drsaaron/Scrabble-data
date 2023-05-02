@@ -34,7 +34,7 @@ public class DataSourceConfiguration {
     @Autowired
     private BlazarCryptoFile cryptoFile;
     
-    @Bean
+    @Bean(destroyMethod = "")
     public DataSource dataSource() {
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(driverClass);

@@ -14,6 +14,9 @@ import java.util.Collection;
  */
 public interface ScrabbleDataAccess {
     
+    public Game addGame(Game g);
+    public void updateGame(Game g);
     public Game getGame(int gameId);
+    
     public Collection<GamePlayer> getPlayersForGame(int gameId);
 }
