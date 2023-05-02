@@ -14,6 +14,7 @@ import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
@@ -98,10 +99,15 @@ public class GameCompletePABImplTest {
 
         int gameId = 2;
         Game game = dal.getGame(gameId);
+        Collection<GamePlayer> players = dal.getPlayersForGame(gameId);
 
         assertNull(game.getWinnerPlayerId());
         assertNull(game.getEndTimestamp());
         assertEquals(GameStatus.Playing, game.getGameStatus());
+        
+        players.stream()
+                .map(p -> dal.getPlayer(p.getPlayerId()))
+                .forEach(p -> assertNull(p.getHighGameId()));
         
         instance.markGameComplete(game);
        
@@ -109,6 +115,12 @@ public class GameCompletePABImplTest {
         assertEquals(3, game.getWinnerPlayerId().intValue());
         assertNotNull(game.getEndTimestamp());
         assertEquals(GameStatus.Complete, game.getGameStatus());
+        
+        // high scores should be updated
+        players = dal.getPlayersForGame(gameId);
+        players.stream()
+                .map(p -> dal.getPlayer(p.getPlayerId()))
+                .forEach(p -> { assertNotNull(p.getHighGameId()); assertEquals(gameId, p.getHighGameId().intValue()); });
     }
 
     /**

@@ -6,6 +6,7 @@ package com.blazartech.scrabble.data.app.access;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
+import com.blazartech.scrabble.data.app.Player;
 import java.util.Collection;
 
 /**
@@ -19,4 +20,7 @@ public interface ScrabbleDataAccess {
     public Game getGame(int gameId);
     
     public Collection<GamePlayer> getPlayersForGame(int gameId);
+    
+    public Player getPlayer(int playerId);
+    public void updatePlayer(Player player);
 }

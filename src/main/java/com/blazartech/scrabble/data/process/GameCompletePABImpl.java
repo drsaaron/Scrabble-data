@@ -7,13 +7,14 @@ package com.blazartech.scrabble.data.process;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
+import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class GameCompletePABImpl implements GameCompletePAB {
     private ScrabbleDataAccess dal;
     
     @Override
+    @Transactional
     public void markGameComplete(Game g) {
         log.info("marking game {} complete", g.getId());
         
@@ -50,6 +52,25 @@ public class GameCompletePABImpl implements GameCompletePAB {
         GamePlayer highestScorePlayer = findHighestScorePlayer(g.getId());
         int winner = highestScorePlayer.getPlayerId();
         g.setWinnerPlayerId(winner);
+        
+        // for each player, is this their highest score?  Realllly ugly code!
+        Collection<GamePlayer> players = dal.getPlayersForGame(g.getId());
+        for (GamePlayer player : players) {
+            int score = player.getScore();
+            Player p = dal.getPlayer(player.getPlayerId());
+            if (p.getHighGameId() != null) {
+                Collection<GamePlayer> highGamePlayers = dal.getPlayersForGame(p.getHighGameId());
+                GamePlayer playerHighGamePlayer = highGamePlayers.stream()
+                        .filter(pp -> pp.getPlayerId() == pp.getPlayerId())
+                        .findFirst()
+                        .orElse(null);
+                if (score > playerHighGamePlayer.getScore()) {
+                    // new high score
+                    p.setHighGameId(g.getId());
+                    dal.updatePlayer(p);
+                }
+            }
+        }
         
         // update
         dal.updateGame(g);
