@@ -6,10 +6,12 @@ package com.blazartech.scrabble.data.app.access;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
+import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.entity.GameEntity;
 import com.blazartech.scrabble.data.entity.GamePlayerEntity;
+import com.blazartech.scrabble.data.entity.GamePlayerRoundEntity;
 import com.blazartech.scrabble.data.entity.PlayerEntity;
 import com.blazartech.scrabble.data.entity.repos.GameEntityRepository;
 import com.blazartech.scrabble.data.entity.repos.GamePlayerEntityRepository;
@@ -124,6 +126,35 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         gameRepository.save(ge);
     }
 
+    @Override
+    public GamePlayer getGamePlayer(int id) {
+        log.info("getting game player {}", id);
+        
+        Optional<GamePlayerEntity> gpe = gamePlayerRepository.findById(id);
+        if (gpe.isPresent()) {
+            return buildGamePlayer(gpe.get());
+        }
+        return null;
+    }
+    
+    @Override
+    public void updateGamePlayer(GamePlayer gamePlayer) {
+        log.info("updating game player {}", gamePlayer);
+        
+        Optional<GamePlayerEntity> gpeo = gamePlayerRepository.findById(gamePlayer.getId());
+        if (gpeo.isPresent()) {
+            GamePlayerEntity gpe = gpeo.get();
+        
+            buildGamePlayerEntity(gamePlayer, gpe);
+            gamePlayerRepository.save(gpe);
+        }
+    }
+    
+    private void buildGamePlayerEntity(GamePlayer gp, GamePlayerEntity gpe) {
+        
+        gpe.setScoreCnt(gp.getScore());
+    }
+    
     private GamePlayer buildGamePlayer(GamePlayerEntity gpe) {
         GamePlayer player = new GamePlayer();
         player.setGameId(gpe.getGameId().getGameId());
@@ -200,11 +231,11 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
 
         playerRepository.save(pe);
     }
-    
+
     @Override
     public GamePlayer getPlayerForGame(int gameId, int playerId) {
         log.info("getting player {} for game {}", playerId, gameId);
-        
+
         Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findByGameAndPlayer(gameId, playerId);
         if (gamePlayers == null || gamePlayers.isEmpty()) {
             return null;
@@ -212,5 +243,31 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
             GamePlayerEntity gpe = gamePlayers.iterator().next();
             return buildGamePlayer(gpe);
         }
+    }
+
+    private GamePlayerRoundEntity buildGamePlayerRoundEntity(GamePlayerRound round) {
+        GamePlayerRoundEntity gpre = new GamePlayerRoundEntity();
+
+        Optional<GamePlayerEntity> gpe = gamePlayerRepository.findById(round.getGamePlayerId());
+
+        gpre.setGamePlayerId(gpe.get());
+        gpre.setNoteTxt(round.getNotes());
+        gpre.setRowCreateDtm(new Date());
+        gpre.setScoreCnt(round.getScore());
+        gpre.setSvnLtrInd(round.isSevenLetter() ? 'Y' : 'N');
+        
+        return gpre;
+    }
+
+    @Override
+    public GamePlayerRound addGamePlayerRound(GamePlayerRound round) {
+        log.info("adding player round {}", round);
+
+        GamePlayerRoundEntity gpre = buildGamePlayerRoundEntity(round);
+        gamePlayerRoundRepository.save(gpre);
+        
+        round.setId(gpre.getGamePlayerRoundId());
+        
+        return round;
     }
 }

@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class Player {
     
-    private int id;
+    private Integer id;
     private String name;
     private Integer highGameId;
 }
