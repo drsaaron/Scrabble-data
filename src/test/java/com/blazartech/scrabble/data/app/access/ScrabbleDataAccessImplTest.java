@@ -7,6 +7,7 @@ package com.blazartech.scrabble.data.app.access;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
+import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
@@ -14,6 +15,7 @@ import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
@@ -145,4 +147,27 @@ public class ScrabbleDataAccessImplTest {
         assertNotNull(g2.getEndTimestamp());
     }
 
+    @Test
+    @Sql("classpath:dalAddTest.sql")
+    public void testAddPlayer() {
+        log.info("testAddPlayer");
+        
+        Player p = new Player();
+        p.setName("tester");
+        
+        instance.addPlayer(p);
+        
+        assertNotNull(p.getId());
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testGetPlayers() {
+        log.info("testGetPlayers");
+        
+        List<Player> players = instance.getPlayers();
+        
+        assertNotNull(players);
+        assertEquals(4, players.size());
+    }
 }

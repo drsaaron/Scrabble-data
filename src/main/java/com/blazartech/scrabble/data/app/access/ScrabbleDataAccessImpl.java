@@ -20,6 +20,7 @@ import com.blazartech.scrabble.data.entity.repos.PlayerEntityRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,17 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         ge.setGameId(g.getId());
 
         return ge;
+    }
+    
+    @Override
+    public List<Game> getAllGames() {
+        log.info("getting all games");
+        
+        Collection<GameEntity> gameEntities = gameRepository.findAll();
+        List<Game> games = gameEntities.stream()
+                .map(ge -> buildGame(Optional.of(ge)))
+                .collect(Collectors.toList());
+        return games;
     }
 
     @Override
@@ -166,14 +178,14 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     }
 
     @Override
-    public Collection<GamePlayer> getPlayersForGame(int gameId) {
+    public List<GamePlayer> getPlayersForGame(int gameId) {
         log.info("getting players for game {}", gameId);
 
         Optional<GameEntity> ge = gameRepository.findById(gameId);
         if (ge.isPresent()) {
             Collection<GamePlayerEntity> playersE = ge.get().getGamePlayerCollection();
             if (playersE != null) {
-                Collection<GamePlayer> players = playersE.stream()
+                List<GamePlayer> players = playersE.stream()
                         .map(e -> buildGamePlayer(e))
                         .sorted((p1, p2) -> Integer.compare(p1.getSequenceNumber(), p2.getSequenceNumber()))
                         .collect(Collectors.toList());
@@ -208,6 +220,36 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         return buildPlayer(pe);
     }
 
+    @Override 
+    public List<Player> getPlayers() {
+        log.info("getting all players");
+        
+        List<PlayerEntity> allPlayerEntities = playerRepository.findAll();
+        List<Player> players = allPlayerEntities.stream()
+                .map(pe -> buildPlayer(Optional.of(pe)))
+                .collect(Collectors.toList());
+        return players;
+    }
+    
+    @Override
+    public Player addPlayer(Player player) {
+        log.info("adding player {}", player);
+        
+        // sanity check
+        if (player.getId() != null) {
+            throw new IllegalStateException("player already has an ID");
+        }
+        
+        PlayerEntity pe = new PlayerEntity();
+        updatePlayerEntity(player, pe);
+        
+        playerRepository.save(pe);
+        
+        player.setId(pe.getPlayerId());
+        
+        return player;
+    }
+    
     private void updatePlayerEntity(Player p, PlayerEntity pe) {
         GameEntity highGame = null;
         if (p.getHighGameId() != null) {

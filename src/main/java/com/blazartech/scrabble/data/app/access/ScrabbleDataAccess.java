@@ -8,7 +8,7 @@ import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.Player;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -19,14 +19,17 @@ public interface ScrabbleDataAccess {
     public Game addGame(Game g);
     public void updateGame(Game g);
     public Game getGame(int gameId);
+    public List<Game> getAllGames();
     
-    public Collection<GamePlayer> getPlayersForGame(int gameId);
+    public List<GamePlayer> getPlayersForGame(int gameId);
     public GamePlayer getPlayerForGame(int gameId, int playerId);
     public GamePlayer getGamePlayer(int id);
     public void updateGamePlayer(GamePlayer gamePlayer);
     
+    public Player addPlayer(Player player);
     public Player getPlayer(int playerId);
     public void updatePlayer(Player player);
+    public List<Player> getPlayers();
     
     public GamePlayerRound addGamePlayerRound(GamePlayerRound round);
 }

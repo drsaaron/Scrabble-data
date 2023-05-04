@@ -5,11 +5,17 @@
 package com.blazartech.scrabble.data.controller;
 
 import com.blazartech.scrabble.data.app.Game;
+import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,11 +29,46 @@ public class ScrabbleDataController {
     @Autowired
     private ScrabbleDataAccess dal;
     
+    @PostMapping("/player")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Player addPlayer(@RequestBody Player player) {
+        
+        log.info("adding player {}", player);
+        
+        dal.addPlayer(player);
+        
+        return player;
+    }
+    
+    @GetMapping("/player")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Player> getAllPlayers() {
+        
+        log.info("getting all players");
+        return dal.getPlayers();
+    }
+    
+    @GetMapping("/player/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Player getPlayer(@PathVariable int id) {
+        log.info("getting player {}", id);
+        
+        return dal.getPlayer(id);
+    }
+    
     @PostMapping("/game")
+    @ResponseStatus(HttpStatus.CREATED)
     public Game addGame(@RequestBody Game g) {
         log.info("adding game {}", g);
         
         g = dal.addGame(g);
         return g;
+    }
+    
+    @GetMapping("/game")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Game> getAllGames() {
+        log.info("getting all games");
+        return dal.getAllGames();
     }
 }
