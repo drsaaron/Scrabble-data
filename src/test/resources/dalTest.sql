@@ -9,6 +9,7 @@
 
 insert into Game(GameId, StsCde) values(1, 'P');
 insert into Game(GameId, StsCde) values(2, 'P');
+insert into Game(GameId, StsCde) values(3, 'P');
 
 insert into Player(PlayerId, NameTxt) values(1, 'Scott');
 insert into Player(PlayerId, NameTxt) values(2, 'Roberta');
@@ -22,3 +23,12 @@ insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) value
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(4, 2, 2, 1, 1500);
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(5, 2, 3, 4, 2500);
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(6, 2, 4, 3, 250);
+
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(7, 3, 1, 2);
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(8, 3, 4, 1);
+
+insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt) values(1001, 7, 25, 'N', 'round 1');
+insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt) values(1002, 7, 15, 'N', 'round 2');
+insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt) values(1003, 7, 85, 'Y', 'round 3');
+
+

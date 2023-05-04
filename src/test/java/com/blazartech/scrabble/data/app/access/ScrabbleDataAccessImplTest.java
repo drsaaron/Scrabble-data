@@ -103,7 +103,7 @@ public class ScrabbleDataAccessImplTest {
         log.info("getPlayersForGame");
         int gameId = 1;
 
-        Collection<GamePlayer> result = instance.getPlayersForGame(gameId);
+        Collection<GamePlayer> result = instance.getGamePlayersForGame(gameId);
         assertEquals(2, result.size());
         
         // the first player should be player 2 according to the sequencing.

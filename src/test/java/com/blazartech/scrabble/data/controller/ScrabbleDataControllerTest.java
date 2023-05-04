@@ -6,6 +6,7 @@ package com.blazartech.scrabble.data.controller;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
+import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
@@ -14,6 +15,8 @@ import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
+import com.blazartech.scrabble.data.process.AddScorePAB;
+import com.blazartech.scrabble.data.process.AddScorePABImpl;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
 import com.blazartech.scrabble.data.process.GameCompletePABImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,21 +73,26 @@ public class ScrabbleDataControllerTest {
         public ScrabbleDataController instance() {
             return new ScrabbleDataController();
         }
-        
+
         @Bean
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
         }
-        
+
         @Bean
         public GameCompletePAB gameCompletePAB() {
             return new GameCompletePABImpl();
+        }
+        
+        @Bean
+        public AddScorePAB addScorePAB() {
+            return new AddScorePABImpl();
         }
     }
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private ScrabbleDataAccess dal;
 
@@ -148,12 +156,12 @@ public class ScrabbleDataControllerTest {
         }
 
     }
-    
+
     @Test
     @Sql("classpath:dalTest.sql")
     public void testGetAllPlayers() {
         log.info("getAllPlayers");
-        
+
         try {
             MvcResult result = mockMvc
                     .perform(
@@ -180,9 +188,9 @@ public class ScrabbleDataControllerTest {
     @Sql("classpath:dalTest.sql")
     public void testgetAllPlayers() {
         log.info("getAllPlayers");
-        
+
         int playerId = 3;
-        
+
         try {
             MvcResult result = mockMvc
                     .perform(
@@ -234,7 +242,7 @@ public class ScrabbleDataControllerTest {
         }
 
     }
-    
+
     @Test
     @Sql("classpath:dalTest.sql")
     public void testGetAllGames() {
@@ -255,7 +263,7 @@ public class ScrabbleDataControllerTest {
             Game[] games = objectMapper.readValue(response, Game[].class);
 
             assertNotNull(games);
-            assertEquals(2, games.length);
+            assertEquals(3, games.length);
 
         } catch (Exception e) {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
@@ -294,15 +302,15 @@ public class ScrabbleDataControllerTest {
     @Test
     public void testAddGamePlayer() {
         log.info("addGamePlayer");
-        
+
         Game g = new Game();
         g.setGameStatus(GameStatus.Playing);
         g = dal.addGame(g);
-        
+
         Player p = new Player();
         p.setName("game player");
         p = dal.addPlayer(p);
-        
+
         GamePlayer gp = new GamePlayer();
         gp.setGameId(g.getId());
         gp.setPlayerId(p.getId());
@@ -328,14 +336,14 @@ public class ScrabbleDataControllerTest {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
         }
     }
-    
+
     @Test
     @Sql("classpath:dalTest.sql")
     public void testGetPlayersForGame() {
         log.info("getPlayersForGame");
-        
+
         int gameId = 2;
-        
+
         try {
             MvcResult result = mockMvc
                     .perform(
@@ -357,12 +365,12 @@ public class ScrabbleDataControllerTest {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
         }
     }
-    
+
     @Test
     @Sql("classpath:dalTest.sql")
     public void testGetPlayersForGame_badRequest() {
         log.info("getPlayersForGame_badRequest");
-        
+
         try {
             mockMvc
                     .perform(
@@ -373,6 +381,75 @@ public class ScrabbleDataControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andReturn();
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testAddGamePlayerRound() {
+        
+        log.info("addGamePlayerRound");
+        
+        int score = 125;
+        int gamePlayerId = 2;
+        
+        GamePlayerRound gamePlayerRound = new GamePlayerRound();
+        gamePlayerRound.setGamePlayerId(gamePlayerId);
+        gamePlayerRound.setNotes("I am testing");
+        gamePlayerRound.setScore(score);
+        gamePlayerRound.setSevenLetter(true);
+        
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            post("/gamePlayerRound")
+                                    .content(asJsonString(gamePlayerRound))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            GamePlayerRound createdGamePlayerRound = objectMapper.readValue(response, GamePlayerRound.class);
+
+            assertNotNull(createdGamePlayerRound.getId());
+
+            // score should have been updated
+            GamePlayer gamePlayer = dal.getGamePlayer(gamePlayerId);
+            assertEquals(score, gamePlayer.getScore());
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testGetGamePlayerRoundsForGamePlayer() {
+        
+        log.info("getGamePlayerRoundsForGamePlayer");
+        
+        int gamePlayerId = 7;
+
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            get("/gamePlayerRound")
+                                    .param("gamePlayerId", Integer.toString(gamePlayerId))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().is2xxSuccessful())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            GamePlayerRound[] gamePlayerRounds = objectMapper.readValue(response, GamePlayerRound[].class);
+
+            assertNotNull(gamePlayerRounds);
+            assertEquals(3, gamePlayerRounds.length);
         } catch (Exception e) {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
         }

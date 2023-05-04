@@ -201,9 +201,21 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         player.setSequenceNumber(gpe.getOrderSeq());
         return player;
     }
+    
+    @Override
+    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(int gamePlayerId) {
+        log.info("getting game player rounds for game player {}", gamePlayerId);
+        
+        List<GamePlayerRoundEntity> roundEntities = gamePlayerRoundRepository.findByGamePlayerId(gamePlayerId);
+        List<GamePlayerRound> rounds = roundEntities.stream()
+                .map(re -> buildGamePlayerRound(re))
+                .sorted((r1, r2) -> Integer.compare(r1.getId(), r2.getId()))
+                .collect(Collectors.toList());
+        return rounds;
+    }
 
     @Override
-    public List<GamePlayer> getPlayersForGame(int gameId) {
+    public List<GamePlayer> getGamePlayersForGame(int gameId) {
         log.info("getting players for game {}", gameId);
 
         Optional<GameEntity> ge = gameRepository.findById(gameId);
@@ -300,7 +312,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     }
 
     @Override
-    public GamePlayer getPlayerForGame(int gameId, int playerId) {
+    public GamePlayer getGamePlayerForGame(int gameId, int playerId) {
         log.info("getting player {} for game {}", playerId, gameId);
 
         Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findByGameAndPlayer(gameId, playerId);
@@ -310,6 +322,16 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
             GamePlayerEntity gpe = gamePlayers.iterator().next();
             return buildGamePlayer(gpe);
         }
+    }
+    
+    private GamePlayerRound buildGamePlayerRound(GamePlayerRoundEntity re) {
+        GamePlayerRound r = new GamePlayerRound();
+        r.setGamePlayerId(re.getGamePlayerId().getGamePlayerId());
+        r.setId(re.getGamePlayerRoundId());
+        r.setNotes(re.getNoteTxt());
+        r.setScore(re.getScoreCnt());
+        r.setSevenLetter(re.getSvnLtrInd() == 'Y');
+        return r;
     }
 
     private GamePlayerRoundEntity buildGamePlayerRoundEntity(GamePlayerRound round) {

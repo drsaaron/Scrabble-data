@@ -6,8 +6,10 @@ package com.blazartech.scrabble.data.controller;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
+import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.data.process.AddScorePAB;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -105,8 +107,26 @@ public class ScrabbleDataController {
     
     @GetMapping("/gamePlayer")
     @ResponseStatus(HttpStatus.OK)
-    public List<GamePlayer> getPlayersForGame(@RequestParam(required = true) int gameId) {
+    public List<GamePlayer> getGamePlayersForGame(@RequestParam(required = true) int gameId) {
         log.info("getting players for game " + gameId);
-        return dal.getPlayersForGame(gameId);
+        return dal.getGamePlayersForGame(gameId);
+    }
+    
+    @Autowired
+    private AddScorePAB addScorePAB;
+    
+    @PostMapping("/gamePlayerRound")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GamePlayerRound addGamePlayerRound(@RequestBody GamePlayerRound gamePlayerRound) {
+        log.info("adding game player round {}", gamePlayerRound);
+        addScorePAB.addScoreToGame(gamePlayerRound);
+        return gamePlayerRound;
+    }
+    
+    @GetMapping("/gamePlayerRound")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(@RequestParam(required = true) int gamePlayerId) {
+        log.info("getting player rounds for game player {}", gamePlayerId);
+        return dal.getGamePlayerRoundsForGamePlayer(gamePlayerId);
     }
 }

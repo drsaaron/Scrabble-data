@@ -34,7 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "GamePlayerRoundEntity.findByScoreCnt", query = "SELECT g FROM GamePlayerRoundEntity g WHERE g.scoreCnt = :scoreCnt"),
     @NamedQuery(name = "GamePlayerRoundEntity.findBySvnLtrInd", query = "SELECT g FROM GamePlayerRoundEntity g WHERE g.svnLtrInd = :svnLtrInd"),
     @NamedQuery(name = "GamePlayerRoundEntity.findByNoteTxt", query = "SELECT g FROM GamePlayerRoundEntity g WHERE g.noteTxt = :noteTxt"),
-    @NamedQuery(name = "GamePlayerRoundEntity.findByRowCreateDtm", query = "SELECT g FROM GamePlayerRoundEntity g WHERE g.rowCreateDtm = :rowCreateDtm")})
+    @NamedQuery(name = "GamePlayerRoundEntity.findByRowCreateDtm", query = "SELECT g FROM GamePlayerRoundEntity g WHERE g.rowCreateDtm = :rowCreateDtm"),
+    @NamedQuery(name = "GamePlayerRoundEntity.findByGamePlayerId", query = "SELECT g FROM GamePlayerRoundEntity g where g.gamePlayerId.gamePlayerId = :gamePlayerId")
+})
 public class GamePlayerRoundEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

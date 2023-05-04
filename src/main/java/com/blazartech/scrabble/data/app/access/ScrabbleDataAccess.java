@@ -21,8 +21,8 @@ public interface ScrabbleDataAccess {
     public Game getGame(int gameId);
     public List<Game> getAllGames();
     
-    public List<GamePlayer> getPlayersForGame(int gameId);
-    public GamePlayer getPlayerForGame(int gameId, int playerId);
+    public List<GamePlayer> getGamePlayersForGame(int gameId);
+    public GamePlayer getGamePlayerForGame(int gameId, int playerId);
     public GamePlayer getGamePlayer(int id);
     public void updateGamePlayer(GamePlayer gamePlayer);
     public GamePlayer addGamePlayer(GamePlayer gamePlayer);
@@ -33,4 +33,5 @@ public interface ScrabbleDataAccess {
     public List<Player> getPlayers();
     
     public GamePlayerRound addGamePlayerRound(GamePlayerRound round);
+    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(int gamePlayerId);
 }

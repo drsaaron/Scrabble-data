@@ -54,12 +54,12 @@ public class GameCompletePABImpl implements GameCompletePAB {
         g.setWinnerPlayerId(winner);
         
         // for each player, is this their highest score?  
-        Collection<GamePlayer> players = dal.getPlayersForGame(g.getId());
+        Collection<GamePlayer> players = dal.getGamePlayersForGame(g.getId());
         for (GamePlayer player : players) {
             int score = player.getScore();
             Player p = dal.getPlayer(player.getPlayerId());
             if (p.getHighGameId() != null) {
-                GamePlayer highGamePlayer = dal.getPlayerForGame(p.getHighGameId(), p.getId());
+                GamePlayer highGamePlayer = dal.getGamePlayerForGame(p.getHighGameId(), p.getId());
                 if (score > highGamePlayer.getScore()) {
                     // new high score
                     p.setHighGameId(g.getId());
@@ -73,7 +73,7 @@ public class GameCompletePABImpl implements GameCompletePAB {
     }
     
     public GamePlayer findHighestScorePlayer(int gameId) {
-        Collection<GamePlayer> players = dal.getPlayersForGame(gameId);
+        Collection<GamePlayer> players = dal.getGamePlayersForGame(gameId);
         List<GamePlayer> playersList = new ArrayList(players);
         Collections.sort(playersList, (p1, p2) -> Integer.compare(p2.getScore(), p1.getScore()));
         return playersList.get(0);

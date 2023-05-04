@@ -100,7 +100,7 @@ public class GameCompletePABImplTest {
 
         int gameId = 2;
         Game game = dal.getGame(gameId);
-        Collection<GamePlayer> players = dal.getPlayersForGame(gameId);
+        Collection<GamePlayer> players = dal.getGamePlayersForGame(gameId);
 
         assertNull(game.getWinnerPlayerId());
         assertNull(game.getEndTimestamp());
@@ -118,7 +118,7 @@ public class GameCompletePABImplTest {
         assertEquals(GameStatus.Complete, game.getGameStatus());
 
         // high scores should be updated
-        players = dal.getPlayersForGame(gameId);
+        players = dal.getGamePlayersForGame(gameId);
         players.stream()
                 .map(p -> dal.getPlayer(p.getPlayerId()))
                 .forEach(p -> {
