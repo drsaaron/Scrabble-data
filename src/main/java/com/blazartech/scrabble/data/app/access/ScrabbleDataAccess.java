@@ -25,6 +25,7 @@ public interface ScrabbleDataAccess {
     public GamePlayer getPlayerForGame(int gameId, int playerId);
     public GamePlayer getGamePlayer(int id);
     public void updateGamePlayer(GamePlayer gamePlayer);
+    public GamePlayer addGamePlayer(GamePlayer gamePlayer);
     
     public Player addPlayer(Player player);
     public Player getPlayer(int playerId);

@@ -5,8 +5,10 @@
 package com.blazartech.scrabble.data.controller;
 
 import com.blazartech.scrabble.data.app.Game;
+import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.data.process.GameCompletePAB;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -70,5 +74,39 @@ public class ScrabbleDataController {
     public List<Game> getAllGames() {
         log.info("getting all games");
         return dal.getAllGames();
+    }
+    
+    @GetMapping("/game/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Game getGame(@PathVariable int id) {
+        log.info("getting game {}", id);
+        return dal.getGame(id);
+    }
+    
+    @Autowired
+    private GameCompletePAB gameComplete;
+    
+    @PutMapping("/game/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Game markGameComplete(@PathVariable int id, @RequestBody Game game) {
+        log.info("updating game {}", id);
+        
+        gameComplete.markGameComplete(game); 
+        return game;
+    }
+    
+    @PostMapping("/gamePlayer") 
+    @ResponseStatus(HttpStatus.CREATED)
+    public GamePlayer addGamePlayer(@RequestBody GamePlayer gamePlayer) {
+        log.info("adding gamePlayer {}", gamePlayer);
+        
+        return dal.addGamePlayer(gamePlayer);
+    }
+    
+    @GetMapping("/gamePlayer")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GamePlayer> getPlayersForGame(@RequestParam(required = true) int gameId) {
+        log.info("getting players for game " + gameId);
+        return dal.getPlayersForGame(gameId);
     }
 }

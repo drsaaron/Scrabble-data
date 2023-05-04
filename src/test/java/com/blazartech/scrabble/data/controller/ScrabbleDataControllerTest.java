@@ -5,6 +5,7 @@
 package com.blazartech.scrabble.data.controller;
 
 import com.blazartech.scrabble.data.app.Game;
+import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
@@ -13,6 +14,8 @@ import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
+import com.blazartech.scrabble.data.process.GameCompletePAB;
+import com.blazartech.scrabble.data.process.GameCompletePABImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,10 +75,18 @@ public class ScrabbleDataControllerTest {
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
         }
+        
+        @Bean
+        public GameCompletePAB gameCompletePAB() {
+            return new GameCompletePABImpl();
+        }
     }
 
     @Autowired
     private MockMvc mockMvc;
+    
+    @Autowired
+    private ScrabbleDataAccess dal;
 
     public ScrabbleDataControllerTest() {
     }
@@ -225,7 +237,7 @@ public class ScrabbleDataControllerTest {
     
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testgetAllGames() {
+    public void testGetAllGames() {
         log.info("getAllGames");
 
         try {
@@ -250,4 +262,119 @@ public class ScrabbleDataControllerTest {
         }
     }
 
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testGetGame() {
+        log.info("getGame");
+
+        int gameId = 1;
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            get("/game/" + Integer.toString(gameId))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().is2xxSuccessful())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            Game game = objectMapper.readValue(response, Game.class);
+
+            assertNotNull(game);
+            assertEquals(GameStatus.Playing, game.getGameStatus());
+            assertNull(game.getEndTimestamp());
+            assertNotNull(game.getStartTimestamp());
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+
+    @Test
+    public void testAddGamePlayer() {
+        log.info("addGamePlayer");
+        
+        Game g = new Game();
+        g.setGameStatus(GameStatus.Playing);
+        g = dal.addGame(g);
+        
+        Player p = new Player();
+        p.setName("game player");
+        p = dal.addPlayer(p);
+        
+        GamePlayer gp = new GamePlayer();
+        gp.setGameId(g.getId());
+        gp.setPlayerId(p.getId());
+        gp.setSequenceNumber(1);
+
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            post("/gamePlayer")
+                                    .content(asJsonString(gp))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            GamePlayer createdGamePlayer = objectMapper.readValue(response, GamePlayer.class);
+
+            assertNotNull(createdGamePlayer.getId());
+
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testGetPlayersForGame() {
+        log.info("getPlayersForGame");
+        
+        int gameId = 2;
+        
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            get("/gamePlayer")
+                                    .param("gameId", Integer.toString(gameId))
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().is2xxSuccessful())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            GamePlayer[] gamePlayers = objectMapper.readValue(response, GamePlayer[].class);
+
+            assertNotNull(gamePlayers);
+            assertEquals(4, gamePlayers.length);
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testGetPlayersForGame_badRequest() {
+        log.info("getPlayersForGame_badRequest");
+        
+        try {
+            mockMvc
+                    .perform(
+                            get("/gamePlayer") // missing required gameId
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
 }

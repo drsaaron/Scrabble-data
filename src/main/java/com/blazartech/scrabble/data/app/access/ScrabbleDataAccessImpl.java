@@ -149,6 +149,20 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         return null;
     }
     
+    @Override 
+    public GamePlayer addGamePlayer(GamePlayer gamePlayer) {
+        log.info("adding game player {}", gamePlayer);
+        
+        GamePlayerEntity gpe = new GamePlayerEntity();
+        buildGamePlayerEntity(gamePlayer, gpe);
+        
+        gamePlayerRepository.save(gpe);
+        
+        gamePlayer.setId(gpe.getGamePlayerId());
+        
+        return gamePlayer;
+    }
+    
     @Override
     public void updateGamePlayer(GamePlayer gamePlayer) {
         log.info("updating game player {}", gamePlayer);
@@ -165,6 +179,17 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     private void buildGamePlayerEntity(GamePlayer gp, GamePlayerEntity gpe) {
         
         gpe.setScoreCnt(gp.getScore());
+        gpe.setOrderSeq(gp.getSequenceNumber());
+        
+        if (gpe.getPlayerId() == null) {
+            Optional<PlayerEntity> pe = playerRepository.findById(gp.getPlayerId());
+            gpe.setPlayerId(pe.get());
+        }
+        
+        if (gpe.getGameId() == null) {
+            Optional<GameEntity> ge = gameRepository.findById(gp.getGameId());
+            gpe.setGameId(ge.get());
+        }
     }
     
     private GamePlayer buildGamePlayer(GamePlayerEntity gpe) {
