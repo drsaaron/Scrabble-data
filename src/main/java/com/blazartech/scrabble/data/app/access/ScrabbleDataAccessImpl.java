@@ -80,6 +80,11 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         ge.setStartDtm(g.getStartTimestamp());
         ge.setStsCde(g.getGameStatus().getDBValue());
         ge.setGameId(g.getId());
+        
+        if (g.getWinnerPlayerId() != null) {
+            Optional<PlayerEntity> pe = playerRepository.findById(g.getWinnerPlayerId());
+            ge.setWinnerId(pe.get());
+        }
 
         return ge;
     }
@@ -278,7 +283,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         }
         
         PlayerEntity pe = new PlayerEntity();
-        updatePlayerEntity(player, pe);
+        buildPlayerEntity(player, pe);
         
         playerRepository.save(pe);
         
@@ -287,7 +292,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         return player;
     }
     
-    private void updatePlayerEntity(Player p, PlayerEntity pe) {
+    private void buildPlayerEntity(Player p, PlayerEntity pe) {
         GameEntity highGame = null;
         if (p.getHighGameId() != null) {
             highGame = gameRepository.findById(p.getHighGameId()).get();
@@ -306,7 +311,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         }
 
         PlayerEntity pe = peo.get();
-        updatePlayerEntity(player, pe);
+        buildPlayerEntity(player, pe);
 
         playerRepository.save(pe);
     }

@@ -137,7 +137,8 @@ public class GameCompletePABImplTest {
 
         int gameId = 2;
 
-        GamePlayer result = instance.findHighestScorePlayer(gameId);
+        Collection<GamePlayer> players = dal.getGamePlayersForGame(gameId);
+        GamePlayer result = instance.findHighestScorePlayer(players);
         assertNotNull(result);
         assertEquals(3, result.getPlayerId());
     }
