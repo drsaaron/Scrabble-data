@@ -11,6 +11,15 @@ import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.data.process.AddScorePAB;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +39,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Slf4j
+@OpenAPIDefinition(info = @Info(
+        title = "data access services scrabble score tracking",
+        version = "1.0"
+))
 public class ScrabbleDataController {
     
     @Autowired
@@ -37,6 +50,16 @@ public class ScrabbleDataController {
     
     @PostMapping("/player")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "add a new player")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "newly added player",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Player.class)
+                    )
+                })
+    })
     public Player addPlayer(@RequestBody Player player) {
         
         log.info("adding player {}", player);
@@ -48,6 +71,16 @@ public class ScrabbleDataController {
     
     @GetMapping("/player")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get a list of all the available players")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "list of players",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Player.class))
+                    )
+                })
+    })
     public List<Player> getAllPlayers() {
         
         log.info("getting all players");
@@ -56,7 +89,17 @@ public class ScrabbleDataController {
     
     @GetMapping("/player/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Player getPlayer(@PathVariable int id) {
+    @Operation(summary = "get a specific player")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the player",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Player.class)
+                    )
+                })
+    })
+    public Player getPlayer(@Parameter(description = "player ID") @PathVariable int id) {
         log.info("getting player {}", id);
         
         return dal.getPlayer(id);
@@ -64,6 +107,16 @@ public class ScrabbleDataController {
     
     @PostMapping("/game")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "add a new game")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "newly added game",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Game.class)
+                    )
+                })
+    })
     public Game addGame(@RequestBody Game g) {
         log.info("adding game {}", g);
         
@@ -73,6 +126,16 @@ public class ScrabbleDataController {
     
     @GetMapping("/game")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get list of games")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "list of games",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Game.class))
+                    )
+                })
+    })
     public List<Game> getAllGames() {
         log.info("getting all games");
         return dal.getAllGames();
@@ -80,7 +143,17 @@ public class ScrabbleDataController {
     
     @GetMapping("/game/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Game getGame(@PathVariable int id) {
+    @Operation(summary = "get specific game")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the game",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Game.class)
+                    )
+                })
+    })
+    public Game getGame(@Parameter(description = "game ID") @PathVariable int id) {
         log.info("getting game {}", id);
         return dal.getGame(id);
     }
@@ -90,7 +163,17 @@ public class ScrabbleDataController {
     
     @PutMapping("/game/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Game markGameComplete(@PathVariable int id, @RequestBody Game game) {
+    @Operation(summary = "mark a game complete")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the updated game",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Game.class)
+                    )
+                })
+    })
+    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody Game game) {
         log.info("updating game {}", id);
         
         gameComplete.markGameComplete(game); 
@@ -99,6 +182,16 @@ public class ScrabbleDataController {
     
     @PostMapping("/gamePlayer") 
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "create a game player")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "the new game player",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GamePlayer.class)
+                    )
+                })
+    })
     public GamePlayer addGamePlayer(@RequestBody GamePlayer gamePlayer) {
         log.info("adding gamePlayer {}", gamePlayer);
         
@@ -107,7 +200,17 @@ public class ScrabbleDataController {
     
     @GetMapping("/gamePlayer")
     @ResponseStatus(HttpStatus.OK)
-    public List<GamePlayer> getGamePlayersForGame(@RequestParam(required = true) int gameId) {
+    @Operation(summary = "get list of players for a game")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the list of game players",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = GamePlayer.class))
+                    )
+                })
+    })
+    public List<GamePlayer> getGamePlayersForGame(@Parameter(description = "game ID") @RequestParam(required = true) int gameId) {
         log.info("getting players for game " + gameId);
         return dal.getGamePlayersForGame(gameId);
     }
@@ -117,6 +220,16 @@ public class ScrabbleDataController {
     
     @PostMapping("/gamePlayerRound")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "create a game player round")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "the new game player found",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GamePlayerRound.class)
+                    )
+                })
+    })
     public GamePlayerRound addGamePlayerRound(@RequestBody GamePlayerRound gamePlayerRound) {
         log.info("adding game player round {}", gamePlayerRound);
         addScorePAB.addScoreToGame(gamePlayerRound);
@@ -125,7 +238,17 @@ public class ScrabbleDataController {
     
     @GetMapping("/gamePlayerRound")
     @ResponseStatus(HttpStatus.OK)
-    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(@RequestParam(required = true) int gamePlayerId) {
+    @Operation(summary = "get a game player'rounds within a game")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "the game player rounds",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = GamePlayerRound.class))
+                    )
+                })
+    })
+    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(@Parameter(description = "game player ID") @RequestParam(required = true) int gamePlayerId) {
         log.info("getting player rounds for game player {}", gamePlayerId);
         return dal.getGamePlayerRoundsForGamePlayer(gamePlayerId);
     }

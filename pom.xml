@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>Scrabble-data</artifactId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -124,6 +124,13 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
         </dependency>
+        
+        <!-- openAPI spec -->
+        <dependency>
+	  <groupId>org.springdoc</groupId>
+	  <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+	  <version>2.1.0</version>
+	</dependency>
     </dependencies>
 
     <repositories>
@@ -147,7 +154,54 @@
             <plugin>
               <groupId>org.springframework.boot</groupId>
               <artifactId>spring-boot-maven-plugin</artifactId>
+	      <configuration>
+		<arguments>
+		  <argument>--spring.config.name=application,build</argument>
+		</arguments>
+	      </configuration>
+	      <executions>
+		<execution>
+		  <id>pre-integration-test</id>
+		  <goals>
+		    <goal>start</goal>
+		  </goals>
+		  <configuration>
+		    <skip>${skip.it}</skip>
+		  </configuration>
+		</execution>
+		<execution>
+		  <id>post-integration-test</id>
+		  <goals>
+		    <goal>stop</goal>
+		  </goals>
+		  <configuration>
+		    <skip>${skip.it}</skip>
+		  </configuration>
+		</execution>
+	      </executions> 
             </plugin>
+	    
+	    <!-- generate the openAPI json file -->
+	    <plugin>
+	      <groupId>org.springdoc</groupId>
+	      <artifactId>springdoc-openapi-maven-plugin</artifactId>
+	      <version>1.4</version>
+	      <executions>
+		<execution>
+		  <phase>integration-test</phase>
+		  <goals>
+		    <goal>generate</goal>
+		  </goals>
+		</execution>
+	      </executions>
+	      <configuration>
+		<apiDocsUrl>http://localhost:30000/v3/api-docs</apiDocsUrl>
+		<outputFileName>scrabbleScore-openapi.json</outputFileName>
+		<!--<outputDir>${project.build.directory}</outputDir>-->
+		<outputDir>.</outputDir>
+		<skip>${skip.it}</skip>
+	      </configuration>
+	    </plugin>
 
             <!-- plugin to make junit 5 work -->
             <plugin>
