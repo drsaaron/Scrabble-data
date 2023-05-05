@@ -5,7 +5,7 @@ ip=$(ifconfig | grep inet | awk '$1=="inet" {print $2}' | tail -1)
 
 # run the service
 imageName=$(dockerImageName.sh)
-imageVersion=0.1 #$(getPomAttribute.sh version | sed 's/-RELEASE$//')
+imageVersion=$(getPomAttribute.sh version | sed 's/-RELEASE$//')
 containerName=$(echo $imageName | sed -re 's%^.*/([a-zA-Z]*)$%\1%') # could also use basename $(dockerImageName.sh)
 
 docker stop $containerName
