@@ -196,5 +196,6 @@ public class ScrabbleDataAccessImplTest {
         
         assertNotNull(player);
         assertEquals(1, player.getSequenceNumber());
+        assertEquals(4, player.getId().intValue());
     }
 }
