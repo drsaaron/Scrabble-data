@@ -25,6 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import static org.springframework.data.jpa.domain.Specification.where;
 import org.springframework.stereotype.Service;
 
 /**
@@ -211,7 +213,10 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(int gamePlayerId) {
         log.info("getting game player rounds for game player {}", gamePlayerId);
         
-        List<GamePlayerRoundEntity> roundEntities = gamePlayerRoundRepository.findByGamePlayerId(gamePlayerId);
+        // g.gamePlayerId.gamePlayerId = :gamePlayerId
+        Specification<GamePlayerRoundEntity> gamePlayerIdFilter = (root, query, cb) -> cb.equal(root.get("gamePlayerId").get("gamePlayerId"), gamePlayerId);
+        
+        List<GamePlayerRoundEntity> roundEntities = gamePlayerRoundRepository.findAll(where(gamePlayerIdFilter));
         List<GamePlayerRound> rounds = roundEntities.stream()
                 .map(re -> buildGamePlayerRound(re))
                 .sorted((r1, r2) -> Integer.compare(r1.getId(), r2.getId()))
@@ -320,7 +325,10 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     public GamePlayer getGamePlayerForGame(int gameId, int playerId) {
         log.info("getting player {} for game {}", playerId, gameId);
 
-        Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findByGameAndPlayer(gameId, playerId);
+        // g.gameId.gameId = :gameId and g.playerId.playerId = :playerId
+        Specification<GamePlayerEntity> gameIdFilter = (root, query, cb) -> cb.equal(root.get("gameId").get("gameId"), gameId);
+        Specification<GamePlayerEntity> playerIdFilter = (root, query, cb) -> cb.equal(root.get("playerId").get("playerId"), playerId);
+        Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findAll(where(gameIdFilter).and(playerIdFilter));
         if (gamePlayers == null || gamePlayers.isEmpty()) {
             return null;
         } else {
