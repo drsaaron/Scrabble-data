@@ -23,8 +23,8 @@ for playerName in desiredPlayers:
         playersDict[playerName["key"]] = list(filter(lambda x: x["name"] == playerName["name"], currentPlayers))[0]
     else:
         print("player " + playerName["name"] + " does not exist, please create")
-        newPlayer = requests.post(urlRoot + "/player", json = { "name": playerName["name"] })
-        print("newPlyer = " + json.dumps(newPlayer.json()))
+        newPlayer = requests.post(urlRoot + "/player", json = { "name": playerName["name"] }).json()
+        print("newPlyer = " + json.dumps(newPlayer))
         playersDict[playerName["key"]] = newPlayer
     
 print("playersDict = " + json.dumps(playersDict, indent = 2))
