@@ -34,12 +34,21 @@ game = requests.post(urlRoot + "/game", json = { "gameStatus": "Playing" }).json
 print("created game " + str(game["id"]))
 
 # add the players
-gamePlayer1 = requests.post(urlRoot + "/gamePlayer", json = { "gameId": game["id"], "playerId": playersDict["first"]["id"], "sequenceNumber": 1 }).json()
-gamePlayer2 = requests.post(urlRoot + "/gamePlayer", json = { "gameId": game["id"], "playerId": playersDict["second"]["id"], "sequenceNumber": 2 }).json()
+def addGamePlayer(label, sequenceNumber):
+    newGamePlayer = requests.post(urlRoot + "/gamePlayer", json = { "gameId": game["id"], "playerId": playersDict[label]["id"], "sequenceNumber": sequenceNumber }).json()
+    return newGamePlayer
+    
+gamePlayer1 = addGamePlayer("first", 1)
+gamePlayer2 = addGamePlayer("second", 2)
 print("player 1 = " + json.dumps(gamePlayer1))
 print("player 2 = " + json.dumps(gamePlayer2))
 
 # add some scores
+def addGamePlayerRound(round, gamePlayer, label, notes):
+    playerRoundData = { "gamePlayerId": gamePlayer["id"], "notes": notes, "score": round[label], "sevenLetter": False }
+    playerRound  = requests.post(urlRoot + "/gamePlayerRound", json = playerRoundData).json()
+    return playerRound
+    
 rounds = [
     { "first": 50, "second": 32 },
     { "first": 20, "second": 36 },
@@ -56,11 +65,8 @@ rounds = [
     { "first": 13, "second": 0 }
 ]
 for round in rounds:
-    gamePlayerRound1 = { "gamePlayerId": gamePlayer1["id"], "notes": "sample first", "score": round["first"], "sevenLetter": False }
-    requests.post(urlRoot + "/gamePlayerRound", json = gamePlayerRound1)
-
-    gamePlayerRound2 = { "gamePlayerId": gamePlayer2["id"], "notes": "sample second", "score": round["second"], "sevenLetter": False }
-    requests.post(urlRoot + "/gamePlayerRound", json = gamePlayerRound2)
+    addGamePlayerRound(round, gamePlayer1, "first", "sample first")
+    addGamePlayerRound(round, gamePlayer2, "second", "sample second")
 
 # mark game complete
 updatedGame = requests.put(urlRoot + "/game/" + str(game["id"]), json = game).json()
