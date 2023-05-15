@@ -103,6 +103,7 @@ public class AddScorePABImplTest {
         round.setNotes("I am a test");
         round.setScore(score);
         round.setSevenLetter(true);
+        round.setRound(1);
 
         assertNull(round.getId());
         
@@ -119,6 +120,7 @@ public class AddScorePABImplTest {
         round2.setNotes("more notes");
         round2.setScore(score + 10);
         round2.setSevenLetter(false);
+        round2.setRound(2);
         
         instance.addScoreToGame(round2);
         

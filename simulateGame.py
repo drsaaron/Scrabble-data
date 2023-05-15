@@ -44,29 +44,30 @@ print("player 1 = " + json.dumps(gamePlayer1))
 print("player 2 = " + json.dumps(gamePlayer2))
 
 # add some scores
-def addGamePlayerRound(round, gamePlayer, label, notes):
-    playerRoundData = { "gamePlayerId": gamePlayer["id"], "notes": notes, "score": round[label], "sevenLetter": False }
+def addGamePlayerRound(round, gamePlayer, label):
+    roundData = round[label]
+    playerRoundData = { "gamePlayerId": gamePlayer["id"], "notes": roundData["notes"], "score": roundData["score"], "sevenLetter": roundData["sevenLetter"], "round": roundData["round"] }
     playerRound  = requests.post(urlRoot + "/gamePlayerRound", json = playerRoundData).json()
     return playerRound
     
 rounds = [
-    { "first": 50, "second": 32 },
-    { "first": 20, "second": 36 },
-    { "first": 21, "second": 5 },
-    { "first": 15, "second": 95 },
-    { "first": 18, "second": 2 },
-    { "first": 90, "second": 7 },
-    { "first": 20, "second": 9 },
-    { "first": 5, "second": 19 },
-    { "first": 12, "second": 22 },
-    { "first": 10, "second": 30 },
-    { "first": 23, "second": 20 },
-    { "first": 11, "second": 15 },
-    { "first": 13, "second": 0 }
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 25, "round": 1 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 32, "round": 1 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 20, "round": 2 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 36, "round": 2 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 21, "round": 3 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 5, "round": 3 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 15, "round": 4 }, "second": { "notes": "test round 1", "sevenLetter": True, "score": 95, "round": 4 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 18, "round": 5 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 2, "round": 5 } },
+    { "first": { "notes": "test round 1", "sevenLetter": True, "score": 90, "round": 6 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 7, "round": 6 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 20, "round": 7 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 9, "round": 7 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 5, "round": 8 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 19, "round": 8 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 12, "round": 9 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 22, "round": 9 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 10, "round": 10 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 30, "round": 10 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 23, "round": 11 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 20, "round": 11 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 11, "round": 12 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 15, "round": 12 } },
+    { "first": { "notes": "test round 1", "sevenLetter": False, "score": 13, "round": 13 }, "second": { "notes": "test round 1", "sevenLetter": False, "score": 0, "round": 13 } }
 ]
 for round in rounds:
-    addGamePlayerRound(round, gamePlayer1, "first", "sample first")
-    addGamePlayerRound(round, gamePlayer2, "second", "sample second")
+    addGamePlayerRound(round, gamePlayer1, "first")
+    addGamePlayerRound(round, gamePlayer2, "second")
 
 # mark game complete
 updatedGame = requests.put(urlRoot + "/game/" + str(game["id"]), json = game).json()

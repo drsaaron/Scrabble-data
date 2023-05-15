@@ -400,6 +400,7 @@ public class ScrabbleDataControllerTest {
         gamePlayerRound.setNotes("I am testing");
         gamePlayerRound.setScore(score);
         gamePlayerRound.setSevenLetter(true);
+        gamePlayerRound.setRound(1);
         
         try {
             MvcResult result = mockMvc

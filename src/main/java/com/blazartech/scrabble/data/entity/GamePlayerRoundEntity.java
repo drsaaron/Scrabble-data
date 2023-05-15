@@ -60,6 +60,18 @@ public class GamePlayerRoundEntity implements Serializable {
     @JoinColumn(name = "GamePlayerId", referencedColumnName = "GamePlayerId")
     @ManyToOne(optional = false)
     private GamePlayerEntity gamePlayerId;
+    
+    @Basic(optional = false)
+    @Column(name = "RoundCnt")
+    private Integer roundCnt;
+
+    public Integer getRoundCnt() {
+        return roundCnt;
+    }
+
+    public void setRoundCnt(Integer roundCnt) {
+        this.roundCnt = roundCnt;
+    }
 
     public GamePlayerRoundEntity() {
     }

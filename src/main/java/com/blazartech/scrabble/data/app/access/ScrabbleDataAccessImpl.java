@@ -357,6 +357,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         gpre.setRowCreateDtm(new Date());
         gpre.setScoreCnt(round.getScore());
         gpre.setSvnLtrInd(round.isSevenLetter() ? 'Y' : 'N');
+        gpre.setRoundCnt(round.getRound());
         
         return gpre;
     }

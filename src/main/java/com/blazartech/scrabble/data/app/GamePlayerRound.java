@@ -20,4 +20,5 @@ public class GamePlayerRound {
     private boolean isSevenLetter;
     private String notes;
     
+    private Integer round;
 }
