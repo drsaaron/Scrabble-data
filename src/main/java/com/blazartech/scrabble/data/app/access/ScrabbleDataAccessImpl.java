@@ -219,7 +219,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         List<GamePlayerRoundEntity> roundEntities = gamePlayerRoundRepository.findAll(where(gamePlayerIdFilter));
         List<GamePlayerRound> rounds = roundEntities.stream()
                 .map(re -> buildGamePlayerRound(re))
-                .sorted((r1, r2) -> Integer.compare(r1.getId(), r2.getId()))
+                .sorted((r1, r2) -> Integer.compare(r1.getRound(), r2.getRound()))
                 .collect(Collectors.toList());
         return rounds;
     }
@@ -344,6 +344,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         r.setNotes(re.getNoteTxt());
         r.setScore(re.getScoreCnt());
         r.setSevenLetter(re.getSvnLtrInd() == 'Y');
+        r.setRound(re.getRoundCnt());
         return r;
     }
 

@@ -182,6 +182,9 @@ public class ScrabbleDataAccessImplTest {
         List<GamePlayerRound> rounds = instance.getGamePlayerRoundsForGamePlayer(gamePlayerId);
 
         assertEquals(3, rounds.size());
+        
+        // data should be sorted with the last row added being the first round.
+        assertEquals(1003, rounds.iterator().next().getId().intValue());
     }
 
     @Test

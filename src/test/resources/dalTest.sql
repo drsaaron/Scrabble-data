@@ -27,8 +27,8 @@ insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) value
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(7, 3, 1, 2);
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(8, 3, 4, 1);
 
-insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1001, 7, 25, 'N', 'round 1', 1);
+insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1001, 7, 25, 'N', 'round 1', 3);
 insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1002, 7, 15, 'N', 'round 2', 2);
-insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1003, 7, 85, 'Y', 'round 3', 3);
+insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1003, 7, 85, 'Y', 'round 3', 1);
 
 
