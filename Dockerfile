@@ -1,4 +1,4 @@
-FROM drsaaron/blazarjavabase:1.19
+FROM drsaaron/blazarjavabase:1.20
 
 ENV ENVIRONMENT=prod
 
