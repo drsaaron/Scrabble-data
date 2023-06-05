@@ -2,6 +2,9 @@
 
 import requests
 import json
+import argparse
+import os
+import sys
 
 def contains(list, filter):
     for x in list:
@@ -9,8 +12,31 @@ def contains(list, filter):
             return True
     return False
 
+parser = argparse.ArgumentParser(description = 'simulate scrabble game')
+parser.add_argument('-e', nargs = 1, help = 'environment', required = 0, default = ['int'])
+args = parser.parse_args()
+appEnvironment = args.e[0]
+
+match appEnvironment:
+  case "int":
+    server = "localhost"
+    port = 41000
+
+  case "qa":
+    server = "localhost"
+    port = 4100
+
+  case "prod":
+    server = str(os.getenv('LAPTOP_IP'))
+    port = 4100
+
+  case _:
+    print("invalid environment, only int|qa|prod are recognized", file=sys.stderr)
+    sys.exit(1)
+    
 # get the current list of players
-urlRoot = "http://localhost:41000"
+urlRoot = "http://" + server + ":" + str(port)
+print("urlroot = " + urlRoot)
 currentPlayers = requests.get(urlRoot + "/player").json();
 print("current players = " + json.dumps(currentPlayers, indent = 2))
 playersDict = { "first": {}, "second": {}}
