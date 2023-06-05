@@ -13,7 +13,7 @@ def contains(list, filter):
     return False
 
 parser = argparse.ArgumentParser(description = 'simulate scrabble game')
-parser.add_argument('-e', nargs = 1, help = 'environment', required = 0, default = ['int'])
+parser.add_argument('-e', nargs = 1, help = 'environment', required = 0, default = ['int'], metavar = 'int|qa|prod')
 args = parser.parse_args()
 appEnvironment = args.e[0]
 
