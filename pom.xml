@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>ScrabbleData</artifactId>
-    <version>1.10-RELEASE</version>
+    <version>1.11-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>com.blazartech.scrabble.data.ScrabbleData</exec.mainClass>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
     
     <parent>  
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.36-RELEASE</version>
+            <version>1.37-RELEASE</version>
         </dependency>
         
         <dependency>
