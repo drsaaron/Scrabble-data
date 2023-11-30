@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GamePlayerEntity.findByGamePlayerId", query = "SELECT g FROM GamePlayerEntity g WHERE g.gamePlayerId = :gamePlayerId"),
     @NamedQuery(name = "GamePlayerEntity.findByScoreCnt", query = "SELECT g FROM GamePlayerEntity g WHERE g.scoreCnt = :scoreCnt"),
     @NamedQuery(name = "GamePlayerEntity.findByOrderSeq", query = "SELECT g FROM GamePlayerEntity g WHERE g.orderSeq = :orderSeq"),
+    @NamedQuery(name = "GamePlayerEntity.findByGameIdAndOrderSeq", query = "SELECT g FROM GamePlayerEntity g where g.orderSeq = :orderSeq and g.gameId.id = :gameId"),
     @NamedQuery(name = "GamePlayerEntity.findByGameId", query = "SELECT g FROM GamePlayerEntity g where g.gameId.gameId = :gameId"),
     @NamedQuery(name = "GamePlayerEntity.findByGameAndPlayer", query = "SELECT g from GamePlayerEntity g where g.gameId.gameId = :gameId and g.playerId.playerId = :playerId")
 })

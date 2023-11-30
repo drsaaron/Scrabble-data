@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -198,7 +197,7 @@ public class ScrabbleDataController {
         return dal.addGamePlayer(gamePlayer);
     }
     
-    @GetMapping("/gamePlayer")
+    @GetMapping("/game/{gameId}/gamePlayer")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "get list of players for a game")
     @ApiResponses(value = {
@@ -210,9 +209,26 @@ public class ScrabbleDataController {
                     )
                 })
     })
-    public List<GamePlayer> getGamePlayersForGame(@Parameter(description = "game ID") @RequestParam(required = true) int gameId) {
+    public List<GamePlayer> getGamePlayersForGame(@Parameter(description = "game ID") @PathVariable int gameId) {
         log.info("getting players for game " + gameId);
         return dal.getGamePlayersForGame(gameId);
+    }
+    
+    @GetMapping("/game/{gameId}/gamePlayer/{sequenceId}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "get a specific player in a game according to their order number")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the game player",
+                content = {
+                    @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = GamePlayer.class))
+                    )
+                })
+    })
+    public GamePlayer getGamePlayerForGame(@Parameter(description = "game ID") @PathVariable int gameId, @Parameter(description = "player sequence number within the game") @PathVariable int sequenceId) {
+        log.info("getting player {} for game {}", sequenceId, gameId);
+        return dal.getGamePlayerForGameBySequence(gameId, sequenceId);
     }
     
     @Autowired
@@ -236,7 +252,7 @@ public class ScrabbleDataController {
         return gamePlayerRound;
     }
     
-    @GetMapping("/gamePlayerRound")
+    @GetMapping("/game/{gameId}/gamePlayer/{sequenceId}/gamePlayerRound")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "get a game player'rounds within a game")
     @ApiResponses(value = {
@@ -248,8 +264,9 @@ public class ScrabbleDataController {
                     )
                 })
     })
-    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(@Parameter(description = "game player ID") @RequestParam(required = true) int gamePlayerId) {
-        log.info("getting player rounds for game player {}", gamePlayerId);
-        return dal.getGamePlayerRoundsForGamePlayer(gamePlayerId);
+    public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(@Parameter(description = "game ID") @PathVariable(required = true) int gameId, @Parameter(description = "player sequence number within the game") @PathVariable int sequenceId) {
+        log.info("getting player rounds for game player sequence number {} in game {}", sequenceId, gameId);
+        
+        return dal.getGamePlayerRoundsForGameAndSequence(gameId, sequenceId);
     }
 }

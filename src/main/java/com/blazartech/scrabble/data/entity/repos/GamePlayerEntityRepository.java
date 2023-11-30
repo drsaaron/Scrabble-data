@@ -6,6 +6,7 @@ package com.blazartech.scrabble.data.entity.repos;
 
 import com.blazartech.scrabble.data.entity.GamePlayerEntity;
 import java.util.Collection;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,5 @@ public interface GamePlayerEntityRepository extends JpaRepository<GamePlayerEnti
     
     public Collection<GamePlayerEntity> findByGameId(@Param("gameId") int gameId);
     public Collection<GamePlayerEntity> findByGameAndPlayer(@Param("gameId") int gameId, @Param("playerId") int playerId);
+    public Optional<GamePlayerEntity> findByGameIdAndOrderSeq(@Param("gameId") int gameId, @Param("orderSeq") int orderSeq);
 }

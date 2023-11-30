@@ -374,4 +374,31 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         
         return round;
     }
+    
+    @Override
+    public List<GamePlayerRound> getGamePlayerRoundsForGameAndSequence(int gameId, int sequenceId) {
+        log.info("getting player rounds for player sequence {} in game {}", sequenceId, gameId);
+        
+        Optional<GamePlayerEntity> gpe = gamePlayerRepository.findByGameIdAndOrderSeq(gameId, sequenceId);
+        if (gpe.isPresent()) {
+            Collection<GamePlayerRoundEntity> rounds = gpe.get().getGamePlayerRoundCollection();
+            return rounds.stream()
+                    .map(r -> buildGamePlayerRound(r))
+                    .collect(Collectors.toList());
+        } else {
+            return null;
+        }
+    }
+    
+    @Override
+    public GamePlayer getGamePlayerForGameBySequence(int gameId, int sequenceId) {
+        log.info("getting player {} for game {}", sequenceId, gameId);
+        
+        Optional<GamePlayerEntity> gpe = gamePlayerRepository.findByGameIdAndOrderSeq(gameId, sequenceId);
+        if (gpe.isPresent()) {
+            return buildGamePlayer(gpe.get());
+        } else {
+            return null;
+        }
+    }
 }

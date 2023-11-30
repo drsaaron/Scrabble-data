@@ -347,7 +347,7 @@ public class ScrabbleDataControllerTest {
         try {
             MvcResult result = mockMvc
                     .perform(
-                            get("/gamePlayer")
+                            get("/game/" + gameId + "/gamePlayer")
                                     .param("gameId", Integer.toString(gameId))
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .accept(MediaType.APPLICATION_JSON)
@@ -361,26 +361,6 @@ public class ScrabbleDataControllerTest {
 
             assertNotNull(gamePlayers);
             assertEquals(4, gamePlayers.length);
-        } catch (Exception e) {
-            throw new RuntimeException("error running test: " + e.getMessage(), e);
-        }
-    }
-
-    @Test
-    @Sql("classpath:dalTest.sql")
-    public void testGetPlayersForGame_badRequest() {
-        log.info("getPlayersForGame_badRequest");
-
-        try {
-            mockMvc
-                    .perform(
-                            get("/gamePlayer") // missing required gameId
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .accept(MediaType.APPLICATION_JSON)
-                    )
-                    .andDo(print())
-                    .andExpect(status().isBadRequest())
-                    .andReturn();
         } catch (Exception e) {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
         }
@@ -432,13 +412,13 @@ public class ScrabbleDataControllerTest {
         
         log.info("getGamePlayerRoundsForGamePlayer");
         
-        int gamePlayerId = 7;
+        int gameId = 3;
+        int sequenceId = 2;
 
         try {
             MvcResult result = mockMvc
                     .perform(
-                            get("/gamePlayerRound")
-                                    .param("gamePlayerId", Integer.toString(gamePlayerId))
+                            get("/game/" + gameId + "/gamePlayer/" + sequenceId + "/gamePlayerRound")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .accept(MediaType.APPLICATION_JSON)
                     )
