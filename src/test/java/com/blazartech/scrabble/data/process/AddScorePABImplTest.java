@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -62,6 +61,16 @@ public class AddScorePABImplTest {
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
         }
+        
+        @Bean
+        public EventSender eventSender() {
+            return new TestGamePlayerRoundEventSender();
+        }
+        
+        @Bean
+        public GamePlayerRoundAddedHandler handler() {
+            return new GamePlayerRoundAddedHandlerImpl();
+        }
     }
     
     @Autowired
@@ -69,9 +78,6 @@ public class AddScorePABImplTest {
     
     @Autowired
     private ScrabbleDataAccess dal;
-    
-    @MockBean
-    private EventSender eventSender;
     
     public AddScorePABImplTest() {
     }
@@ -117,7 +123,7 @@ public class AddScorePABImplTest {
         assertNotNull(round.getId());
         
         GamePlayer player = dal.getGamePlayer(gamePlayer);
-//        assertEquals(score, player.getScore());
+        assertEquals(score, player.getScore());
         
         // add a second score
         GamePlayerRound round2 = new GamePlayerRound();
@@ -130,7 +136,7 @@ public class AddScorePABImplTest {
         instance.addScoreToGame(round2);
         
         player = dal.getGamePlayer(gamePlayer);
-  //      assertEquals(score + score + 10, player.getScore());
+        assertEquals(score + score + 10, player.getScore());
     }
     
 }
