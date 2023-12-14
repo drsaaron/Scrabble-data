@@ -4,14 +4,13 @@
  */
 package com.blazartech.scrabble.data.process;
 
-import com.blazartech.scrabble.data.app.GamePlayerRound;
+import com.blazartech.scrabble.data.app.Game;
 
 /**
  *
  * @author scott
  */
-public interface GamePlayerRoundAddedHandler {
-
-    void handleGamePlayerRoundAdded(GamePlayerRound round);
+public interface GameCompleteHandler {
     
+    void handleGameComplete(Game game);
 }

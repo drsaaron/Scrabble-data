@@ -6,6 +6,7 @@ package com.blazartech.scrabble.mq.config;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.RabbitConnectionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +19,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitConfiguration {
-
+    
     @Bean
-    public FanoutExchange fanout() {
-        return new FanoutExchange("scrabble");
+    public TopicExchange topicExchange() {
+        return new TopicExchange("scrabble-exchange");
     }
 
     @Value("${scrabble.mq.rabbit.userID}")

@@ -9,6 +9,7 @@ import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,9 @@ public class GameCompletePABImpl implements GameCompletePAB {
 
     @Autowired
     private ScrabbleDataAccess dal;
+    
+    @Autowired
+    private EventSender eventSender;
     
     @Override
     @Transactional
@@ -55,26 +59,8 @@ public class GameCompletePABImpl implements GameCompletePAB {
         g.setWinnerPlayerId(winner);
         dal.updateGame(g);
         
-        // for each player, is this their highest score?  
-        for (GamePlayer player : players) {
-            int score = player.getScore();
-            Player p = dal.getPlayer(player.getPlayerId());
-            if (p.getHighGameId() != null) {
-                GamePlayer highGamePlayer = dal.getGamePlayerForGame(p.getHighGameId(), p.getId());
-                if (score > highGamePlayer.getScore()) {
-                    // new high score
-                    p.setHighGameId(g.getId());
-                    dal.updatePlayer(p);
-                }
-            } else { // no existing high game, so by definition this is the high game
-                log.info("high game updated");
-                p.setHighGameId(g.getId());
-                dal.updatePlayer(p);
-            }
-        }
-        
-        // update
-        dal.updateGame(g);
+        // send event for subsequent processing
+        eventSender.sendEvent("scrabble-game-completed", g);
     }
     
     public GamePlayer findHighestScorePlayer(Collection<GamePlayer> players) {

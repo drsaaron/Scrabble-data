@@ -6,15 +6,16 @@ package com.blazartech.scrabble.data.app;
 
 import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  *
  * @author scott
  */
 @Data
-public class Game {
+@EqualsAndHashCode(callSuper = true)
+public class Game extends ScrabbleData {
     
-    private Integer id;
     private GameStatus gameStatus;
     private Date startTimestamp;
     private Date endTimestamp;

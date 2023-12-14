@@ -8,7 +8,8 @@ import com.blazartech.scrabble.data.app.ScrabbleData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.FanoutExchange;
+import static org.springframework.amqp.core.ExchangeBuilder.fanoutExchange;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class EventSenderRabbitImpl implements EventSender {
     private RabbitTemplate template;
 
     @Autowired
-    private FanoutExchange fanoutExchange;
+    private TopicExchange topicExchange;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,7 +35,7 @@ public class EventSenderRabbitImpl implements EventSender {
         try {
             String objectJson = objectMapper.writeValueAsString(object);
             log.info("publishing message");
-            template.convertAndSend(fanoutExchange.getName(), topicName, objectJson);
+            template.convertAndSend(topicExchange.getName(), topicName, objectJson);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("error sending event: " + e.getMessage(), e);
         }
