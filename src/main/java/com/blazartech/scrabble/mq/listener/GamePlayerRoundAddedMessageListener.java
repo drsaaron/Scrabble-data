@@ -32,7 +32,7 @@ public class GamePlayerRoundAddedMessageListener {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @RabbitListener(queues = "scrabble-gamePlayerRound")
+    @RabbitListener(queues = "${scrabble.mq.rabbit.gameplayerroundadded.queueName}")
     public void onMessage(String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", json, topic);
 

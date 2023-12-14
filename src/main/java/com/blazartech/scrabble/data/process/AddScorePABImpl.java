@@ -4,13 +4,13 @@
  */
 package com.blazartech.scrabble.data.process;
 
-import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +27,9 @@ public class AddScorePABImpl implements AddScorePAB {
     @Autowired
     private EventSender eventSender;
     
+    @Value("${scrabble.mq.rabbit.gameplayerroundadded.topicName}")
+    private String topicName;
+    
     @Override
     @Transactional
     public void addScoreToGame(GamePlayerRound round) {
@@ -36,7 +39,7 @@ public class AddScorePABImpl implements AddScorePAB {
         dal.addGamePlayerRound(round);
         
         // send an event for subsequentprocessing
-        eventSender.sendEvent("scrabble-gamePlayerRound-added", round);
+        eventSender.sendEvent(topicName, round);
     }
     
 }

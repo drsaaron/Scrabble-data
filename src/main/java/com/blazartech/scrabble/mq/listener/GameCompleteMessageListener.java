@@ -31,7 +31,7 @@ public class GameCompleteMessageListener {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @RabbitListener(queues = "scrabble-gameCompleted")
+    @RabbitListener(queues = "${scrabble.mq.rabbit.gamecompleted.queueName}")
     public void onMessage(String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", json, topic);
 

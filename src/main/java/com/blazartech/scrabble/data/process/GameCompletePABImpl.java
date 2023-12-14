@@ -7,7 +7,6 @@ package com.blazartech.scrabble.data.process;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
-import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
@@ -18,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,6 +33,9 @@ public class GameCompletePABImpl implements GameCompletePAB {
     
     @Autowired
     private EventSender eventSender;
+    
+    @Value("${scrabble.mq.rabbit.gamecompleted.topicName}")
+    private String topicName;
     
     @Override
     @Transactional
@@ -60,7 +63,7 @@ public class GameCompletePABImpl implements GameCompletePAB {
         dal.updateGame(g);
         
         // send event for subsequent processing
-        eventSender.sendEvent("scrabble-game-completed", g);
+        eventSender.sendEvent(topicName, g);
     }
     
     public GamePlayer findHighestScorePlayer(Collection<GamePlayer> players) {
