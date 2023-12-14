@@ -25,20 +25,20 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class GameCompleteMessageListener {
-    
+
     @Autowired
     private GameCompleteHandler handler;
-    
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    
+
     @RabbitListener(queues = "scrabble-gameCompleted")
     public void onMessage(String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", json, topic);
-        
-        Game item = objectMapper.readValue(json, Game.class);
-        log.info("got item {}", item);
-        
+
         try {
+            Game item = objectMapper.readValue(json, Game.class);
+            log.info("got item {}", item);
+
             handler.handleGameComplete(item);
         } catch (Exception e) {
             log.error("got exception processing message: " + e.getMessage(), e);
