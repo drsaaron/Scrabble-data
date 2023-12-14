@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  *
  * @author scott
  */
 @Configuration
+@Profile("!build")
 public class RabbitConfiguration {
     
     @Value("${scrabble.mq.rabbit.exchangeName}")

@@ -8,10 +8,10 @@ import com.blazartech.scrabble.data.app.ScrabbleData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import static org.springframework.amqp.core.ExchangeBuilder.fanoutExchange;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@Profile("!build")
 public class EventSenderRabbitImpl implements EventSender {
 
     @Autowired

@@ -16,6 +16,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import static org.springframework.amqp.support.AmqpHeaders.DELIVERY_TAG;
 import static org.springframework.amqp.support.AmqpHeaders.RECEIVED_ROUTING_KEY;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@Profile("!build")
 public class GamePlayerRoundAddedMessageListener {
 
     @Autowired
