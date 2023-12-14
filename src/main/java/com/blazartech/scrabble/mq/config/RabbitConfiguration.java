@@ -116,7 +116,7 @@ public class RabbitConfiguration {
     private BlazarCryptoFile cryptoFile;
     
     @Bean
-    public RabbitConnectionFactoryBean builConnectionFactory() {
+    public RabbitConnectionFactoryBean buildConnectionFactory() {
         RabbitConnectionFactoryBean factory = new RabbitConnectionFactoryBean();
 
         // Generic connection properties
@@ -125,8 +125,24 @@ public class RabbitConfiguration {
         factory.setUsername(rabbitUserID);
         factory.setPassword(cryptoFile.getPassword(rabbitUserID, rabbitResourceID));
 
-
         return factory;
     }
+    
+  /*  @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        connectionFactory.setHost(rabbitHost);
+        connectionFactory.setPort(rabbitPort);
+        connectionFactory.setUsername(rabbitUserID);
+        connectionFactory.setPassword(cryptoFile.getPassword(rabbitUserID, rabbitResourceID));
+        connectionFactory.setConnectionCacheSize(5);
+        return connectionFactory;
+    }
+    
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate t = new RabbitTemplate(connectionFactory);
+        return t;
+    }*/
 
 }
