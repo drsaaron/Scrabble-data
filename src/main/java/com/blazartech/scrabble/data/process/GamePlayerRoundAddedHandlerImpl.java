@@ -7,36 +7,28 @@ package com.blazartech.scrabble.data.process;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
-import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author scott
  */
-@Service
-@Slf4j
-public class AddScorePABImpl implements AddScorePAB {
+@Component
+public class GamePlayerRoundAddedHandlerImpl implements GamePlayerRoundAddedHandler {
 
     @Autowired
     private ScrabbleDataAccess dal;
-    
-    @Autowired
-    private EventSender eventSender;
-    
-    @Override
+
     @Transactional
-    public void addScoreToGame(GamePlayerRound round) {
-        log.info("adding score to game: {}", round);
-        
-        // save the round
-        dal.addGamePlayerRound(round);
-        
-        // send an event for subsequentprocessing
-        eventSender.sendEvent("scrabble-gamePlayerRound-added", round);
+    @Override
+    public void handleGamePlayerRoundAdded(GamePlayerRound round) {
+        // update the player's score
+        GamePlayer gamePlayer = dal.getGamePlayer(round.getGamePlayerId());
+        int currentScore = gamePlayer.getScore();
+        int newScore = currentScore + round.getScore();
+        gamePlayer.setScore(newScore);
+        dal.updateGamePlayer(gamePlayer);
     }
-    
 }
