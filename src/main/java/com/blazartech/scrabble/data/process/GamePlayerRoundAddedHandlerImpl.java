@@ -8,6 +8,7 @@ import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @author scott
  */
 @Component
+@Slf4j
 public class GamePlayerRoundAddedHandlerImpl implements GamePlayerRoundAddedHandler {
 
     @Autowired
@@ -24,6 +26,8 @@ public class GamePlayerRoundAddedHandlerImpl implements GamePlayerRoundAddedHand
     @Transactional
     @Override
     public void handleGamePlayerRoundAdded(GamePlayerRound round) {
+        log.info("updating score for playerRound {}", round);
+        
         // update the player's score
         GamePlayer gamePlayer = dal.getGamePlayer(round.getGamePlayerId());
         int currentScore = gamePlayer.getScore();

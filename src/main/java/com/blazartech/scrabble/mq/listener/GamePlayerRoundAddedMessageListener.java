@@ -33,9 +33,8 @@ public class GamePlayerRoundAddedMessageListener {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     
     @RabbitListener(queues = "scrabble-gamePlayerRound")
-    public void onMessage(Message message, String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
+    public void onMessage(String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", json, topic);
-        log.info("got message {}", message);
         
         GamePlayerRound item = objectMapper.readValue(json, GamePlayerRound.class);
         log.info("got item {}", item);
