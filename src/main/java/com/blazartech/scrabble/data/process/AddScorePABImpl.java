@@ -4,12 +4,14 @@
  */
 package com.blazartech.scrabble.data.process;
 
-import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,10 +20,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@Profile("!build")
 public class AddScorePABImpl implements AddScorePAB {
 
     @Autowired
     private ScrabbleDataAccess dal;
+    
+    @Autowired
+    private EventSender eventSender;
+    
+    @Value("${scrabble.mq.rabbit.gameplayerroundadded.topicName}")
+    private String topicName;
     
     @Override
     @Transactional
@@ -31,12 +40,8 @@ public class AddScorePABImpl implements AddScorePAB {
         // save the round
         dal.addGamePlayerRound(round);
         
-        // update the player's score
-        GamePlayer gamePlayer = dal.getGamePlayer(round.getGamePlayerId());
-        int currentScore = gamePlayer.getScore();
-        int newScore = currentScore + round.getScore();
-        gamePlayer.setScore(newScore);
-        dal.updateGamePlayer(gamePlayer);
+        // send an event for subsequentprocessing
+        eventSender.sendEvent(topicName, round);
     }
     
 }

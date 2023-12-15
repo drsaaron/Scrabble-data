@@ -7,8 +7,8 @@ package com.blazartech.scrabble.data.process;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GameStatus;
-import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,10 +27,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@Profile("!build")
 public class GameCompletePABImpl implements GameCompletePAB {
 
     @Autowired
     private ScrabbleDataAccess dal;
+    
+    @Autowired
+    private EventSender eventSender;
+    
+    @Value("${scrabble.mq.rabbit.gamecompleted.topicName}")
+    private String topicName;
     
     @Override
     @Transactional
@@ -55,26 +64,8 @@ public class GameCompletePABImpl implements GameCompletePAB {
         g.setWinnerPlayerId(winner);
         dal.updateGame(g);
         
-        // for each player, is this their highest score?  
-        for (GamePlayer player : players) {
-            int score = player.getScore();
-            Player p = dal.getPlayer(player.getPlayerId());
-            if (p.getHighGameId() != null) {
-                GamePlayer highGamePlayer = dal.getGamePlayerForGame(p.getHighGameId(), p.getId());
-                if (score > highGamePlayer.getScore()) {
-                    // new high score
-                    p.setHighGameId(g.getId());
-                    dal.updatePlayer(p);
-                }
-            } else { // no existing high game, so by definition this is the high game
-                log.info("high game updated");
-                p.setHighGameId(g.getId());
-                dal.updatePlayer(p);
-            }
-        }
-        
-        // update
-        dal.updateGame(g);
+        // send event for subsequent processing
+        eventSender.sendEvent(topicName, g);
     }
     
     public GamePlayer findHighestScorePlayer(Collection<GamePlayer> players) {

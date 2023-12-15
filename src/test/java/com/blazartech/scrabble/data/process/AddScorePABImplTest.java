@@ -12,6 +12,7 @@ import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
+import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -59,6 +60,16 @@ public class AddScorePABImplTest {
         @Bean
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
+        }
+        
+        @Bean
+        public EventSender eventSender() {
+            return new TestGamePlayerRoundEventSender();
+        }
+        
+        @Bean
+        public GamePlayerRoundAddedHandler handler() {
+            return new GamePlayerRoundAddedHandlerImpl();
         }
     }
     

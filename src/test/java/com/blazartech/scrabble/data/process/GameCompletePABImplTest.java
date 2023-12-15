@@ -13,6 +13,7 @@ import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
+import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,16 @@ public class GameCompletePABImplTest {
         @Bean
         public ScrabbleDataAccess dal() {
             return new ScrabbleDataAccessImpl();
+        }
+        
+        @Bean
+        public EventSender eventSender() {
+            return new TestGameCompleteEventSender();
+        }
+        
+        @Bean
+        public GameCompleteHandler handler() {
+            return new GameCompleteHandlerImpl();
         }
     }
 
