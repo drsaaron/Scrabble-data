@@ -5,8 +5,6 @@
 package com.blazartech.scrabble.mq.cap;
 
 import com.blazartech.scrabble.data.app.ScrabbleData;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -29,17 +27,10 @@ public class EventSenderRabbitImpl implements EventSender {
     @Autowired
     private TopicExchange topicExchange;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public void sendEvent(String topicName, ScrabbleData object) {
-        try {
-            String objectJson = objectMapper.writeValueAsString(object);
-            log.info("publishing message");
-            template.convertAndSend(topicExchange.getName(), topicName, objectJson);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("error sending event: " + e.getMessage(), e);
-        }
+        log.info("publishing message");
+        template.convertAndSend(topicExchange.getName(), topicName, object);
     }
 
 }

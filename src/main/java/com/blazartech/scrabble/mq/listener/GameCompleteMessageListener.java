@@ -7,7 +7,6 @@ package com.blazartech.scrabble.mq.listener;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.process.GameCompleteHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -31,16 +30,11 @@ public class GameCompleteMessageListener {
     @Autowired
     private GameCompleteHandler handler;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    @RabbitListener(queues = "${scrabble.mq.rabbit.gamecompleted.queueName}")
-    public void onMessage(String json, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
-        log.info("json to process = {} on topic {}", json, topic);
+    @RabbitListener(queues = "${scrabble.mq.rabbit.gamecompleted.queueName}", concurrency = "3", messageConverter = "jsonMessageConverter")
+    public void onMessage(Game item, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
+        log.info("json to process = {} on topic {}", item, topic);
 
         try {
-            Game item = objectMapper.readValue(json, Game.class);
-            log.info("got item {}", item);
-
             handler.handleGameComplete(item);
         } catch (Exception e) {
             log.error("got exception processing message: " + e.getMessage(), e);
