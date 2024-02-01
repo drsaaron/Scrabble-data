@@ -5,8 +5,9 @@
 package com.blazartech.scrabble.data.config;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,13 +37,18 @@ public class DataSourceConfiguration {
     
     @Bean(destroyMethod = "")
     public DataSource dataSource() {
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(driverClass);
-        ds.setUrl(url);
-        ds.setUsername(userID);
-        ds.setPassword(cryptoFile.getPassword(userID, resourceID));
-        ds.setInitialSize(5);
-        ds.setMaxTotal(5);
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setUsername(userID);
+        config.setPassword(cryptoFile.getPassword(userID, resourceID));
+        config.setDriverClassName(driverClass);
+        config.setMaximumPoolSize(5);
+        config.setPoolName("scrabble-pool");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        
+        DataSource ds = new HikariDataSource(config);
         
         return ds;
     }
