@@ -5,7 +5,6 @@
 package com.blazartech.scrabble.mq.config;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
-import java.net.URL;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -92,6 +91,11 @@ public class RabbitConfiguration {
     public Binding gamePlayerRoundAddedBackoutQueueBinding(DirectExchange backoutExchange, Queue gamePlayerRoundAddedBackoutQueue) {
         return BindingBuilder.bind(gamePlayerRoundAddedBackoutQueue).to(backoutExchange).with(gamePlayerAddedQueueName);
     }
+    
+    @Bean
+    public Binding gamePlayerRoundAddedRequeueBinding(DirectExchange requeueExchange, Queue gamePlayerRoundAddedQueue) {
+        return BindingBuilder.bind(gamePlayerRoundAddedQueue).to(requeueExchange).with(gamePlayerAddedQueueName);
+    }
 
     @Value("${scrabble.mq.rabbit.gamecompleted.queueName}")
     private String gameCompletedQueueName;
@@ -127,6 +131,11 @@ public class RabbitConfiguration {
     @Bean
     public Binding gameCompletedBackoutQueueBinding(DirectExchange backoutExchange, Queue gameCompletedBackoutQueue) {
         return BindingBuilder.bind(gameCompletedBackoutQueue).to(backoutExchange).with(gameCompletedQueueName);
+    }
+    
+    @Bean
+    public Binding gameCompletedRequeueBinding(DirectExchange requeueExchange, Queue gameCompletedQueue) {
+        return BindingBuilder.bind(gameCompletedQueue).to(requeueExchange).with(gameCompletedQueueName);
     }
 
     @Value("${scrabble.mq.rabbit.userID}")

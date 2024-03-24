@@ -8,6 +8,8 @@ import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,11 +30,13 @@ public class GamePlayerRoundAddedHandlerImpl implements GamePlayerRoundAddedHand
     public void handleGamePlayerRoundAdded(GamePlayerRound round) {
         log.info("updating score for playerRound {}", round);
         
-        // update the player's score
-        GamePlayer gamePlayer = dal.getGamePlayer(round.getGamePlayerId());
-        int currentScore = gamePlayer.getScore();
-        int newScore = currentScore + round.getScore();
-        gamePlayer.setScore(newScore);
-        dal.updateGamePlayer(gamePlayer);
+        // update the rolling score
+        Collection<GamePlayerRound> previousRounds = dal.getGamePlayerRoundsForGamePlayer(round.getGamePlayerId());
+        int cummulativeScore = previousRounds.stream()
+                .filter(r -> r.getRound() <= round.getRound())
+                .map(r -> r.getScore())
+                .collect(Collectors.summingInt(Integer::intValue));
+        round.setRollingScore(cummulativeScore);
+        dal.updateGamePlayerRound(round);
     }
 }

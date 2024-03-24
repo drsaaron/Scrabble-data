@@ -34,14 +34,16 @@ public class AddScorePABImpl implements AddScorePAB {
     
     @Override
     @Transactional
-    public void addScoreToGame(GamePlayerRound round) {
+    public GamePlayerRound addScoreToGame(GamePlayerRound round) {
         log.info("adding score to game: {}", round);
         
         // save the round
-        dal.addGamePlayerRound(round);
+        round = dal.addGamePlayerRound(round);
         
         // send an event for subsequentprocessing
         eventSender.sendEvent(topicName, round);
+        
+        return round;
     }
     
 }

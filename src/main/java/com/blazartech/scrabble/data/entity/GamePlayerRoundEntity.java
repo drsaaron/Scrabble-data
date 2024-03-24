@@ -65,6 +65,18 @@ public class GamePlayerRoundEntity implements Serializable {
     @Column(name = "RoundCnt")
     private Integer roundCnt;
 
+    @Basic(optional = true)
+    @Column(name = "RollingScoreCnt")
+    private Integer rollingScoreCnt;
+
+    public Integer getRollingScoreCnt() {
+        return rollingScoreCnt;
+    }
+
+    public void setRollingScoreCnt(Integer rollingScoreCnt) {
+        this.rollingScoreCnt = rollingScoreCnt;
+    }
+    
     public Integer getRoundCnt() {
         return roundCnt;
     }

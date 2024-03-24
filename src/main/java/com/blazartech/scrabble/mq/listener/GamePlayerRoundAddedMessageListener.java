@@ -47,7 +47,7 @@ public class GamePlayerRoundAddedMessageListener {
      * @throws JsonProcessingException
      * @throws IOException 
      */
-    @RabbitListener(queues = "${scrabble.mq.rabbit.gameplayerroundadded.queueName}", concurrency = "1", messageConverter = "jsonMessageConverter")
+    @RabbitListener(queues = "${scrabble.mq.rabbit.gameplayerroundadded.queueName}", concurrency = "4", messageConverter = "jsonMessageConverter")
     public void onMessage(GamePlayerRound item, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", item, topic);
 
