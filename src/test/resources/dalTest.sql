@@ -16,7 +16,7 @@ insert into Player(PlayerId, NameTxt) values(2, 'Roberta');
 insert into Player(PlayerId, NameTxt) values(3, 'Henrietta');
 insert into Player(PlayerId, NameTxt) values(4, 'Pauline');
 
-insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(1, 1, 1, 2);
+insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(1, 1, 1, 2, 200);
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq) values(2, 1, 2, 1);
 
 insert into GamePlayer(GamePlayerId, GameId, PlayerId, OrderSeq, ScoreCnt) values(3, 2, 1, 2, 500);
@@ -31,4 +31,4 @@ insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd
 insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1002, 7, 15, 'N', 'round 2', 2);
 insert into GamePlayerRound(GamePlayerRoundId, GamePlayerId, ScoreCnt, SvnLtrInd, NoteTxt, RoundCnt) values(1003, 7, 85, 'Y', 'round 3', 1);
 
-
+update Player set HighGameId = 1 where PlayerId = 1;

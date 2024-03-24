@@ -6,7 +6,8 @@ package com.blazartech.scrabble.data.process;
 
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
-import com.blazartech.scrabble.data.app.GameStatus;
+import com.blazartech.scrabble.data.app.GamePlayerRound;
+import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccessImpl;
 import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
@@ -17,12 +18,10 @@ import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;
-import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-    GameCompletePABImplTest.GameCompletePABImplTestConfiguration.class,
+    GameCompleteHandlerImplTest.GameCompleteHandlerImplTestConfiguration.class,
     TestEntityManagerConfiguration.class,
     TestDataSourceConfiguration.class,
     JpaVendorAdapterConfig.class,
@@ -49,15 +48,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 })
 @Transactional
 @Slf4j
-public class GameCompletePABImplTest {
-
+public class GameCompleteHandlerImplTest {
+    
     @Configuration
     @PropertySource("classpath:unittest.properties")
-    static class GameCompletePABImplTestConfiguration {
+    static class GameCompleteHandlerImplTestConfiguration {
 
         @Bean
-        public GameCompletePABImpl instance() {
-            return new GameCompletePABImpl();
+        public GamePlayerRoundAddedHandlerImpl instance() {
+            return new GamePlayerRoundAddedHandlerImpl();
         }
 
         @Bean
@@ -75,98 +74,82 @@ public class GameCompletePABImplTest {
             return new GameCompleteHandlerImpl();
         }
     }
-
+    
     @Autowired
-    private GameCompletePABImpl instance;
-
+    private GameCompleteHandlerImpl instance;
+    
     @Autowired
     private ScrabbleDataAccess dal;
-
-    public GameCompletePABImplTest() {
+    
+    public GameCompleteHandlerImplTest() {
     }
-
+    
     @BeforeAll
     public static void setUpClass() {
     }
-
+    
     @AfterAll
     public static void tearDownClass() {
     }
-
+    
     @BeforeEach
     public void setUp() {
     }
-
+    
     @AfterEach
     public void tearDown() {
     }
 
+    private static final int GAME_PLAYER_ID = 7;
+    
     /**
-     * Test of markGameComplete method, of class GameCompletePABImpl.
+     * Test of getTotalScore method, of class GameCompleteHandlerImpl.
      */
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testMarkGameComplete() {
-        log.info("markGameComplete");
-
-        int gameId = 2;
-        Game game = dal.getGame(gameId);
-        Collection<GamePlayer> players = dal.getGamePlayersForGame(gameId);
-
-        assertNull(game.getWinnerPlayerId());
-        assertNull(game.getEndTimestamp());
-        assertEquals(GameStatus.Playing, game.getGameStatus());
-
-/*        players.stream()
-                .map(p -> dal.getPlayer(p.getPlayerId()))
-                .forEach(p -> assertNull(p.getHighGameId()));*/
-
-        instance.markGameComplete(game);
-
-        assertNotNull(game.getWinnerPlayerId());
-        assertEquals(3, game.getWinnerPlayerId().intValue());
-        assertNotNull(game.getEndTimestamp());
-        assertEquals(GameStatus.Complete, game.getGameStatus());
-
-        // high scores should be updated
-        players = dal.getGamePlayersForGame(gameId);
-        players.stream()
-                .map(p -> dal.getPlayer(p.getPlayerId()))
-                .forEach(p -> {
-                    assertNotNull(p.getHighGameId());
-                    assertEquals(gameId, p.getHighGameId().intValue());
-                });
+    public void testGetTotalScore() {
+        log.info("getTotalScore");
+        
+        Collection<GamePlayerRound> rounds = dal.getGamePlayerRoundsForGamePlayer(GAME_PLAYER_ID);
+        int expResult = 125;
+        int result = instance.getTotalScore(rounds);
+        assertEquals(expResult, result);
     }
 
+    private static final int GAME_PLAYER_ID_NO_PREVIOUS_HIGH_GAME = 8;
+    
     /**
-     * Test of findHighestScorePlayer method, of class GameCompletePABImpl.
+     * Test of isNewHighScore method, of class GameCompleteHandlerImpl.
      */
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testFindHighestScorePlayer() {
-        log.info("findHighestScorePlayer");
+    public void testIsNewHighScore_noPrevious() {
+        log.info("isNewHighScore_noPrevious");
+        
+        GamePlayer gp = dal.getGamePlayer(GAME_PLAYER_ID_NO_PREVIOUS_HIGH_GAME );
+        Player p = dal.getPlayer(gp.getPlayerId());
+        
+        int score = 55;
 
-        int gameId = 2;
-
-        Collection<GamePlayer> players = dal.getGamePlayersForGame(gameId);
-        GamePlayer result = instance.findHighestScorePlayer(players);
-        assertNotNull(result);
-        assertEquals(3, result.getPlayerId());
+        boolean expResult = true;
+        boolean result = instance.isNewHighScore(p, score);
+        assertEquals(expResult, result);
     }
-
+    
     @Test
     @Sql("classpath:dalTest.sql")
-    public void testMarkGameComplete_invalidState() {
-        log.info("markGameComplete_invalidState");
+    public void testIsNewHighScore_withPrevious() {
+        log.info("isNewHighScore_withPrevious");
+        
+        GamePlayer gp = dal.getGamePlayer(GAME_PLAYER_ID);
+        Player p = dal.getPlayer(gp.getPlayerId());
+        
+        int score = 255;
 
-        assertThrows(IllegalStateException.class,
-                () -> {
-                    int gameId = 2;
-
-                    Game game = dal.getGame(gameId);
-                    game.setGameStatus(GameStatus.Complete);
-                    instance.markGameComplete(game);
-                }
-        );
+        boolean expResult = true;
+        boolean result = instance.isNewHighScore(p, score);
+        assertEquals(expResult, result);
     }
+
+    
 }

@@ -36,4 +36,6 @@ public interface ScrabbleDataAccess {
     public GamePlayerRound addGamePlayerRound(GamePlayerRound round);
     public List<GamePlayerRound> getGamePlayerRoundsForGamePlayer(int gamePlayerId);
     public List<GamePlayerRound> getGamePlayerRoundsForGameAndSequence(int gameId, int sequenceId);
+    public void updateGamePlayerRound(GamePlayerRound round);
+    public GamePlayerRound getGamePlayerRound(int gamePlayerRoundId);
 }

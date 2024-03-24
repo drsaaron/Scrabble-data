@@ -6,6 +6,7 @@ package com.blazartech.scrabble.data.app;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  *
@@ -13,6 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class GamePlayerRound extends ScrabbleData {
     
     private int gamePlayerId;
@@ -22,4 +24,6 @@ public class GamePlayerRound extends ScrabbleData {
     private String notes;
     
     private Integer round;
+    
+    private Integer rollingScore;
 }

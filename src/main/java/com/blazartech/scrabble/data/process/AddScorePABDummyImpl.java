@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class AddScorePABDummyImpl implements AddScorePAB {
 
     @Override
-    public void addScoreToGame(GamePlayerRound round) {
+    public GamePlayerRound addScoreToGame(GamePlayerRound round) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     

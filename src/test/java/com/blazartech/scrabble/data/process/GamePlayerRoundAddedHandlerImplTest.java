@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-    AddScorePABImplTest.AddScorePABImplTestConfiguration.class,
+    GamePlayerRoundAddedHandlerImplTest.GamePlayerRoundAddedHandlerImplTestConfiguration.class,
     TestEntityManagerConfiguration.class,
     TestDataSourceConfiguration.class,
     JpaVendorAdapterConfig.class,
@@ -45,15 +45,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 })
 @Transactional
 @Slf4j
-public class AddScorePABImplTest {
+public class GamePlayerRoundAddedHandlerImplTest {
     
     @Configuration
     @PropertySource("classpath:unittest.properties")
-    static class AddScorePABImplTestConfiguration {
-        
+    static class GamePlayerRoundAddedHandlerImplTestConfiguration {
+
         @Bean
-        public AddScorePABImpl instance() {
-            return new AddScorePABImpl();
+        public GamePlayerRoundAddedHandlerImpl instance() {
+            return new GamePlayerRoundAddedHandlerImpl();
         }
 
         @Bean
@@ -63,22 +63,22 @@ public class AddScorePABImplTest {
         
         @Bean
         public EventSender eventSender() {
-            return new TestGamePlayerRoundEventSender();
+            return new TestGameCompleteEventSender();
         }
         
         @Bean
-        public GamePlayerRoundAddedHandler handler() {
-            return new GamePlayerRoundAddedHandlerImpl();
+        public GameCompleteHandler handler() {
+            return new GameCompleteHandlerImpl();
         }
     }
     
     @Autowired
-    private AddScorePABImpl instance;
+    private GamePlayerRoundAddedHandlerImpl instance;
     
     @Autowired
     private ScrabbleDataAccess dal;
     
-    public AddScorePABImplTest() {
+    public GamePlayerRoundAddedHandlerImplTest() {
     }
     
     @BeforeAll
@@ -98,43 +98,29 @@ public class AddScorePABImplTest {
     }
 
     /**
-     * Test of addScoreToGame method, of class AddScorePABImpl.
+     * Test of handleGamePlayerRoundAdded method, of class GamePlayerRoundAddedHandlerImpl.
      */
     @Test
-    @Sql("classpath:addScoreTest.sql")
-    public void testAddScoreToGame() {
-        log.info("addScoreToGame");
+    @Sql("classpath:dalTest.sql")
+    public void testHandleGamePlayerRoundAdded() {
+        System.out.println("handleGamePlayerRoundAdded");
         
-        int gamePlayer = 1;
-        int score = 55;
+        // read round 1001, which is the final round in the test setup
+        int gamePlayerRoundId = 1001;
+        int expectedScore = 125;
+        GamePlayerRound round = dal.getGamePlayerRound(gamePlayerRoundId);
+        assertNull(round.getRollingScore());
         
-        GamePlayerRound round = new GamePlayerRound();
-        round.setGamePlayerId(gamePlayer);
-        round.setNotes("I am a test");
-        round.setScore(score);
-        round.setSevenLetter(true);
-        round.setRound(1);
-
-        assertNull(round.getId());
+        instance.handleGamePlayerRoundAdded(round);
         
-        instance.addScoreToGame(round);
-
-        assertNotNull(round.getId());
+        // check that the object is updated.
+        assertNotNull(round.getRollingScore());
+        assertEquals(expectedScore, round.getRollingScore());
         
-        assertEquals(score, round.getRollingScore());
-        
-        // add a second score
-        GamePlayerRound round2 = new GamePlayerRound();
-        round2.setGamePlayerId(gamePlayer);
-        round2.setNotes("more notes");
-        round2.setScore(score + 10);
-        round2.setSevenLetter(false);
-        round2.setRound(2);
-        
-        instance.addScoreToGame(round2);
-        
-        assertEquals(round.getScore() + round2.getScore(), round2.getRollingScore());
-        
+        // re-read from DB and validate it's been updated there too
+    /*    GamePlayerRound updatedRound = dal.getGamePlayerRound(gamePlayerRoundId);
+        assertNotNull(updatedRound.getRollingScore());
+        assertEquals(expectedScore, updatedRound.getRollingScore());*/
     }
     
 }

@@ -12,5 +12,5 @@ import com.blazartech.scrabble.data.app.GamePlayerRound;
  */
 public interface AddScorePAB {
     
-    void addScoreToGame(GamePlayerRound round);
+    GamePlayerRound addScoreToGame(GamePlayerRound round);
 }
