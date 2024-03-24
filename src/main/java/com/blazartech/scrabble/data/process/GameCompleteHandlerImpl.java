@@ -29,6 +29,7 @@ public class GameCompleteHandlerImpl implements GameCompleteHandler {
 
     public int getTotalScore(Collection<GamePlayerRound> rounds) {
         return rounds.stream()
+                .peek(r -> log.info("accumulating round {}", r))
                 .map(r -> r.getScore())
                 .collect(Collectors.summingInt(Integer::intValue));
     }
@@ -56,7 +57,7 @@ public class GameCompleteHandlerImpl implements GameCompleteHandler {
             Player p = dal.getPlayer(gamePlayer.getPlayerId());
 
             // get the rounds for the game for the player
-            Collection<GamePlayerRound> rounds = dal.getGamePlayerRoundsForGamePlayer(gamePlayer.getPlayerId());
+            Collection<GamePlayerRound> rounds = dal.getGamePlayerRoundsForGamePlayer(gamePlayer.getId());
 
             // accumulate the score
             int score = getTotalScore(rounds);
