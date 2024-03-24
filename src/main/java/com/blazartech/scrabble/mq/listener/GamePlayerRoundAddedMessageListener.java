@@ -25,20 +25,14 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @Profile("!build")
-public class GamePlayerRoundAddedMessageListener {
+public class GamePlayerRoundAddedMessageListener implements ScrabbleMessageListener<GamePlayerRound> {
 
     @Autowired
     private GamePlayerRoundAddedHandler handler;
 
     /** 
      * handle a game player round being added.  the process bean will update the 
-     * game player's game score.  We deliberately choose a concurrency of one in 
-     * the listener because if using simulateGame.py we can get a number of player
-     * rounds being added in a short time and the way the process bean works (just
-     * taking teh current score and adding the round's score), race conditions can
-     * lead to an incorrect total.  We could fix the process bean as well to look
-     * at all rounds and not worry about race conditions.  But this is a simple 
-     * thing.
+     * game player round's rolling score.
      * 
      * @param item
      * @param channel
@@ -48,6 +42,7 @@ public class GamePlayerRoundAddedMessageListener {
      * @throws IOException 
      */
     @RabbitListener(queues = "${scrabble.mq.rabbit.gameplayerroundadded.queueName}", concurrency = "4", messageConverter = "jsonMessageConverter")
+    @Override
     public void onMessage(GamePlayerRound item, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", item, topic);
 

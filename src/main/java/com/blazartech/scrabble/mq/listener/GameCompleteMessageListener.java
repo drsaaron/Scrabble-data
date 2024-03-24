@@ -25,12 +25,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @Profile("!build")
-public class GameCompleteMessageListener {
+public class GameCompleteMessageListener implements ScrabbleMessageListener<Game> {
 
     @Autowired
     private GameCompleteHandler handler;
 
     @RabbitListener(queues = "${scrabble.mq.rabbit.gamecompleted.queueName}", concurrency = "3", messageConverter = "jsonMessageConverter")
+    @Override
     public void onMessage(Game item, Channel channel, @Header(DELIVERY_TAG) long deliveryTag, @Header(RECEIVED_ROUTING_KEY) String topic) throws JsonProcessingException, IOException {
         log.info("json to process = {} on topic {}", item, topic);
 
