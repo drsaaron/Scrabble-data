@@ -98,6 +98,11 @@ for round in rounds:
     addGamePlayerRound(round, gamePlayer2, "second")
 
 # mark game complete
-updatedGame = requests.put(urlRoot + "/game/" + str(game["id"]), json = game).json()
-print("final game: " + json.dumps(updatedGame))
+patch = [{ "op": "replace", "path": "/gameStatus", "value": "Complete" }]
+headers = {
+    'Content-Type': 'application/json-patch+json'
+}
+updatedGame = requests.patch(urlRoot + "/game/" + str(game["id"]), json = patch, headers = headers)
+print(updatedGame)
+print("final game: " + json.dumps(updatedGame.json()))
       
