@@ -178,6 +178,7 @@ public class ScrabbleDataController {
                     )
                 })
     })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JsonPatchSchema.class))))
     public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
         log.info("updating game {}", id);
 
