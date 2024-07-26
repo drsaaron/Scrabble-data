@@ -279,7 +279,7 @@ public class ScrabbleDataController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "get a game player'rounds within a game")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "the game player rounds",
+        @ApiResponse(responseCode = "200", description = "the game player rounds",
                 content = {
                     @Content(
                             mediaType = "application/json",
