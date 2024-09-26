@@ -69,7 +69,7 @@ public class GameCompletePABImpl implements GameCompletePAB {
     }
     
     public GamePlayer findHighestScorePlayer(Collection<GamePlayer> players) {
-        List<GamePlayer> playersList = new ArrayList(players);
+        List<GamePlayer> playersList = new ArrayList<>(players);
         Collections.sort(playersList, (p1, p2) -> Integer.compare(p2.getScore(), p1.getScore()));
         return playersList.get(0);
     }
