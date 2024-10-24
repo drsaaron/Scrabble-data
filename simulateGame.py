@@ -77,18 +77,21 @@ def addGamePlayerRound(round, gamePlayer, label):
     return playerRound
     
 rounds = [
-    { "round": 1, "first": { "notes": "ended 8/30/2024", "sevenLetter": False, "score": 22 }, "second": { "notes": "", "sevenLetter": True, "score": 72 } },
-    { "round": 2, "first": { "notes": "", "sevenLetter": True, "score": 70 }, "second": { "notes": "", "sevenLetter": False, "score": 36 } },
-    { "round": 3, "first": { "notes": "", "sevenLetter": False, "score": 20 }, "second": { "notes": "", "sevenLetter": False, "score": 39 } },
-    { "round": 4, "first": { "notes": "", "sevenLetter": False, "score": 26 }, "second": { "notes": "", "sevenLetter": False, "score": 5 } },
-    { "round": 5, "first": { "notes": "", "sevenLetter": False, "score": 19 }, "second": { "notes": "WOW!!!", "sevenLetter": True, "score": 176 } },
-    { "round": 6, "first": { "notes": "", "sevenLetter": False, "score": 10 }, "second": { "notes": "", "sevenLetter": True, "score": 64 } },
-    { "round": 7, "first": { "notes": "", "sevenLetter": False, "score": 24 }, "second": { "notes": "", "sevenLetter": False, "score": 32 } },
-    { "round": 8, "first": { "notes": "", "sevenLetter": False, "score": 12 }, "second": { "notes": "", "sevenLetter": False, "score": 47 } },
-    { "round": 9, "first": { "notes": "", "sevenLetter": False, "score": 44 }, "second": { "notes": "", "sevenLetter": False, "score": 24 } },
-    { "round": 10, "first": { "notes": "", "sevenLetter": False, "score": 51 }, "second": { "notes": "", "sevenLetter": False, "score": 12 } },
-    { "round": 11, "first": { "notes": "", "sevenLetter": False, "score": 16 }, "second": { "notes": "", "sevenLetter": False, "score": 26 } },
-    { "round": 12, "first": { "notes": "", "sevenLetter": False, "score": -4 }, "second": { "notes": "", "sevenLetter": False, "score": 4 } }
+    { "round": 1, "first": { "notes": "played 9/24/2024", "sevenLetter": False, "score": 38 }, "second": { "notes": "", "sevenLetter": False, "score": 21 } },
+    { "round": 2, "first": { "notes": "", "sevenLetter": False, "score": 6 }, "second": { "notes": "", "sevenLetter": False, "score": 11 } },
+    { "round": 3, "first": { "notes": "", "sevenLetter": False, "score": 14 }, "second": { "notes": "", "sevenLetter": False, "score": 24 } },
+    { "round": 4, "first": { "notes": "", "sevenLetter": False, "score": 13 }, "second": { "notes": "", "sevenLetter": False, "score": 27 } },
+    { "round": 5, "first": { "notes": "", "sevenLetter": False, "score": 12 }, "second": { "notes": "", "sevenLetter": False, "score": 12 } },
+    { "round": 6, "first": { "notes": "", "sevenLetter": False, "score": 24 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
+    { "round": 7, "first": { "notes": "", "sevenLetter": False, "score": 33 }, "second": { "notes": "", "sevenLetter": False, "score": 20 } },
+    { "round": 8, "first": { "notes": "", "sevenLetter": False, "score": 8 }, "second": { "notes": "", "sevenLetter": False, "score": 5 } },
+    { "round": 9, "first": { "notes": "", "sevenLetter": True, "score": 99 }, "second": { "notes": "", "sevenLetter": False, "score": 26 } },
+    { "round": 10, "first": { "notes": "", "sevenLetter": False, "score": 22 }, "second": { "notes": "YOWZA!!!!", "sevenLetter": True, "score": 167 } },
+    { "round": 11, "first": { "notes": "", "sevenLetter": False, "score": 12 }, "second": { "notes": "", "sevenLetter": False, "score": 18 } },
+    { "round": 12, "first": { "notes": "", "sevenLetter": False, "score": 22 }, "second": { "notes": "", "sevenLetter": False, "score": 25 } },
+    { "round": 13, "first": { "notes": "", "sevenLetter": False, "score": 14 }, "second": { "notes": "", "sevenLetter": False, "score": 13 } },
+    { "round": 14, "first": { "notes": "", "sevenLetter": False, "score": 10 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
+    { "round": 15, "first": { "notes": "", "sevenLetter": False, "score": 2 }, "second": { "notes": "", "sevenLetter": False, "score": -2 } }
 ]
 for round in rounds:
     addGamePlayerRound(round, gamePlayer1, "first")
