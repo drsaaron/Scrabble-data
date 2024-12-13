@@ -77,21 +77,21 @@ def addGamePlayerRound(round, gamePlayer, label):
     return playerRound
     
 rounds = [
-    { "round": 1, "first": { "notes": "played 9/24/2024", "sevenLetter": False, "score": 38 }, "second": { "notes": "", "sevenLetter": False, "score": 21 } },
-    { "round": 2, "first": { "notes": "", "sevenLetter": False, "score": 6 }, "second": { "notes": "", "sevenLetter": False, "score": 11 } },
-    { "round": 3, "first": { "notes": "", "sevenLetter": False, "score": 14 }, "second": { "notes": "", "sevenLetter": False, "score": 24 } },
-    { "round": 4, "first": { "notes": "", "sevenLetter": False, "score": 13 }, "second": { "notes": "", "sevenLetter": False, "score": 27 } },
-    { "round": 5, "first": { "notes": "", "sevenLetter": False, "score": 12 }, "second": { "notes": "", "sevenLetter": False, "score": 12 } },
-    { "round": 6, "first": { "notes": "", "sevenLetter": False, "score": 24 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
-    { "round": 7, "first": { "notes": "", "sevenLetter": False, "score": 33 }, "second": { "notes": "", "sevenLetter": False, "score": 20 } },
-    { "round": 8, "first": { "notes": "", "sevenLetter": False, "score": 8 }, "second": { "notes": "", "sevenLetter": False, "score": 5 } },
-    { "round": 9, "first": { "notes": "", "sevenLetter": True, "score": 99 }, "second": { "notes": "", "sevenLetter": False, "score": 26 } },
-    { "round": 10, "first": { "notes": "", "sevenLetter": False, "score": 22 }, "second": { "notes": "YOWZA!!!!", "sevenLetter": True, "score": 167 } },
-    { "round": 11, "first": { "notes": "", "sevenLetter": False, "score": 12 }, "second": { "notes": "", "sevenLetter": False, "score": 18 } },
-    { "round": 12, "first": { "notes": "", "sevenLetter": False, "score": 22 }, "second": { "notes": "", "sevenLetter": False, "score": 25 } },
-    { "round": 13, "first": { "notes": "", "sevenLetter": False, "score": 14 }, "second": { "notes": "", "sevenLetter": False, "score": 13 } },
-    { "round": 14, "first": { "notes": "", "sevenLetter": False, "score": 10 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
-    { "round": 15, "first": { "notes": "", "sevenLetter": False, "score": 2 }, "second": { "notes": "", "sevenLetter": False, "score": -2 } }
+    { "round": 1, "first": { "notes": "played 11/20/2024", "sevenLetter": False, "score": 18 }, "second": { "notes": "", "sevenLetter": True, "score": 71 } },
+    { "round": 2, "first": { "notes": "", "sevenLetter": False, "score": 18 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
+    { "round": 3, "first": { "notes": "", "sevenLetter": False, "score": 16 }, "second": { "notes": "", "sevenLetter": False, "score": 3 } },
+    { "round": 4, "first": { "notes": "", "sevenLetter": True, "score": 86 }, "second": { "notes": "", "sevenLetter": True, "score": 76 } },
+    { "round": 5, "first": { "notes": "", "sevenLetter": False, "score": 10 }, "second": { "notes": "", "sevenLetter": False, "score": 33 } },
+    { "round": 6, "first": { "notes": "", "sevenLetter": False, "score": 16 }, "second": { "notes": "", "sevenLetter": False, "score": 52 } },
+    { "round": 7, "first": { "notes": "", "sevenLetter": False, "score": 30 }, "second": { "notes": "", "sevenLetter": False, "score": 35 } },
+    { "round": 8, "first": { "notes": "", "sevenLetter": False, "score": 15 }, "second": { "notes": "", "sevenLetter": False, "score": 48 } },
+    { "round": 9, "first": { "notes": "", "sevenLetter": False, "score": 36 }, "second": { "notes": "", "sevenLetter": True, "score": 78 } },
+    { "round": 10, "first": { "notes": "", "sevenLetter": False, "score": 39 }, "second": { "notes": "", "sevenLetter": False, "score": 35 } },
+    { "round": 11, "first": { "notes": "", "sevenLetter": False, "score": 16 }, "second": { "notes": "", "sevenLetter": True, "score": 86 } },
+    { "round": 12, "first": { "notes": "", "sevenLetter": False, "score": -9 }, "second": { "notes": "", "sevenLetter": False, "score": 9 } }
+#    { "round": 13, "first": { "notes": "", "sevenLetter": False, "score": 14 }, "second": { "notes": "", "sevenLetter": False, "score": 13 } },
+#    { "round": 14, "first": { "notes": "", "sevenLetter": False, "score": 10 }, "second": { "notes": "", "sevenLetter": False, "score": 0 } },
+#    { "round": 15, "first": { "notes": "", "sevenLetter": False, "score": 2 }, "second": { "notes": "", "sevenLetter": False, "score": -2 } }
 ]
 for round in rounds:
     addGamePlayerRound(round, gamePlayer1, "first")
