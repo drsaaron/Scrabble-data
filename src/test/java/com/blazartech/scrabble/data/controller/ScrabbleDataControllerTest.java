@@ -98,7 +98,7 @@ public class ScrabbleDataControllerTest {
     @Autowired
     private ScrabbleDataAccess dal;
     
-    @MockBean
+    @MockitoBean
     private EventSender eventSender;
 
     public ScrabbleDataControllerTest() {
