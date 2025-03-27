@@ -9,15 +9,15 @@ import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.GamePlayerEntity;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
-import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -38,8 +38,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     TransactionManagerConfig.class
 })
 @Transactional
-@Slf4j
 public class GamePlayerEntityRepositoryTest {
+    
+    private static final Logger log = LoggerFactory.getLogger(GamePlayerEntityRepositoryTest.class);
     
     @Configuration
     @PropertySource("classpath:unittest.properties")

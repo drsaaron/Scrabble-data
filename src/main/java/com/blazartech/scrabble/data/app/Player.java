@@ -4,16 +4,40 @@
  */
 package com.blazartech.scrabble.data.app;
 
-import lombok.Data;
 
 /**
  *
  * @author scott
  */
-@Data
 public class Player {
     
     private Integer id;
     private String name;
     private Integer highGameId;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getHighGameId() {
+        return highGameId;
+    }
+
+    public void setHighGameId(Integer highGameId) {
+        this.highGameId = highGameId;
+    }
+    
+    
 }

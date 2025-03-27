@@ -12,7 +12,8 @@ import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +22,10 @@ import org.springframework.stereotype.Component;
  * @author scott
  */
 @Component
-@Slf4j
 public class GameCompleteHandlerImpl implements GameCompleteHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GameCompleteHandlerImpl.class);
+    
     @Autowired
     private ScrabbleDataAccess dal;
 

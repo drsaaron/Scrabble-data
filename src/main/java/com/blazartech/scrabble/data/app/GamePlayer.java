@@ -4,13 +4,10 @@
  */
 package com.blazartech.scrabble.data.app;
 
-import lombok.Data;
-
 /**
  *
  * @author scott
  */
-@Data
 public class GamePlayer {
     
     private Integer id;
@@ -18,4 +15,46 @@ public class GamePlayer {
     private int playerId;
     private int score;
     private int sequenceNumber;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+    
+    
 }

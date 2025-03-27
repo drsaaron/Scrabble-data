@@ -27,7 +27,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,13 +44,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author scott
  */
 @RestController
-@Slf4j
 @OpenAPIDefinition(info = @Info(
         title = "data access services scrabble score tracking",
         version = "1.0"
 ))
 public class ScrabbleDataController {
 
+    private static final Logger log = LoggerFactory.getLogger(ScrabbleDataController.class);
+    
     @Autowired
     private ScrabbleDataAccess dal;
 

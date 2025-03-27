@@ -23,7 +23,6 @@ import com.blazartech.scrabble.mq.cap.EventSender;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +32,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -64,9 +65,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     TransactionManagerConfig.class
 })
 @Transactional
-@Slf4j
 public class ScrabbleDataControllerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(ScrabbleDataControllerTest.class);
+    
     @Configuration
     @PropertySource("classpath:unittest.properties")
     static class ScrabbleDataControllerTestConfiguration {

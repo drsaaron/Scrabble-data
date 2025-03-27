@@ -16,7 +16,6 @@ import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
 import com.blazartech.scrabble.mq.cap.EventSender;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
-import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +26,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,9 +49,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
     TransactionManagerConfig.class
 })
 @Transactional
-@Slf4j
 public class GameCompletePABImplTest {
 
+    private static final Logger log = LoggerFactory.getLogger(GameCompletePABImplTest.class);
+    
     @Configuration
     @PropertySource("classpath:unittest.properties")
     static class GameCompletePABImplTestConfiguration {
