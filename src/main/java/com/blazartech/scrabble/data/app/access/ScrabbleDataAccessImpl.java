@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.PredicateSpecification;
 import static org.springframework.data.jpa.domain.Specification.where;
 import org.springframework.stereotype.Service;
 
@@ -216,7 +216,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         log.info("getting game player rounds for game player {}", gamePlayerId);
 
         // g.gamePlayerId.gamePlayerId = :gamePlayerId
-        Specification<GamePlayerRoundEntity> gamePlayerIdFilter = (root, query, cb) -> cb.equal(root.get("gamePlayerId").get("gamePlayerId"), gamePlayerId);
+        PredicateSpecification<GamePlayerRoundEntity> gamePlayerIdFilter = (root, cb) -> cb.equal(root.get("gamePlayerId").get("gamePlayerId"), gamePlayerId);
 
         List<GamePlayerRoundEntity> roundEntities = gamePlayerRoundRepository.findAll(where(gamePlayerIdFilter));
         List<GamePlayerRound> rounds = roundEntities.stream()
@@ -328,8 +328,8 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         log.info("getting player {} for game {}", playerId, gameId);
 
         // g.gameId.gameId = :gameId and g.playerId.playerId = :playerId
-        Specification<GamePlayerEntity> gameIdFilter = (root, query, cb) -> cb.equal(root.get("gameId").get("gameId"), gameId);
-        Specification<GamePlayerEntity> playerIdFilter = (root, query, cb) -> cb.equal(root.get("playerId").get("playerId"), playerId);
+        PredicateSpecification<GamePlayerEntity> gameIdFilter = (root, cb) -> cb.equal(root.get("gameId").get("gameId"), gameId);
+        PredicateSpecification<GamePlayerEntity> playerIdFilter = (root, cb) -> cb.equal(root.get("playerId").get("playerId"), playerId);
         Collection<GamePlayerEntity> gamePlayers = gamePlayerRepository.findAll(where(gameIdFilter).and(playerIdFilter));
         if (gamePlayers == null || gamePlayers.isEmpty()) {
             return null;
