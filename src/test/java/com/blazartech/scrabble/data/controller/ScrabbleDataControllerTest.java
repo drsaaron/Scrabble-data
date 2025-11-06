@@ -13,6 +13,7 @@ import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccessImpl;
 import com.blazartech.scrabble.data.config.JpaVendorAdapterConfig;
 import com.blazartech.scrabble.data.config.TransactionManagerConfig;
+import com.blazartech.scrabble.data.controller.JsonPatchSchema.Op;
 import com.blazartech.scrabble.data.entity.repos.TestDataSourceConfiguration;
 import com.blazartech.scrabble.data.entity.repos.TestEntityManagerConfiguration;
 import com.blazartech.scrabble.data.process.AddScorePAB;
@@ -35,7 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,6 +49,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -438,6 +440,42 @@ public class ScrabbleDataControllerTest {
 
             assertNotNull(gamePlayerRounds);
             assertEquals(3, gamePlayerRounds.length);
+        } catch (Exception e) {
+            throw new RuntimeException("error running test: " + e.getMessage(), e);
+        }
+    }
+    
+    @Test
+    @Sql("classpath:dalTest.sql")
+    public void testMarkGameComplete() {
+        log.info("markGameComplete");
+        
+        int gameId = 3;
+        JsonPatchSchema patchUpdate = new JsonPatchSchema();
+        patchUpdate.op = Op.replace;
+        patchUpdate.path = "/gameStatus";
+        patchUpdate.value = "Complete";
+        
+        Game currentGame = dal.getGame(gameId);
+        assertEquals(GameStatus.Playing, currentGame.getGameStatus());
+        
+        try {
+            MvcResult result = mockMvc
+                    .perform(
+                            patch("/game/" + gameId )
+                                    .contentType("application/json-patch+json")
+                                    .accept("application/json-patch+json")
+                                    .content(asJsonString(new JsonPatchSchema[]{patchUpdate}).getBytes())
+                    )
+                    .andDo(print())
+                    .andExpect(status().is2xxSuccessful())
+                    .andReturn();
+
+            String response = result.getResponse().getContentAsString();
+            Game updatedGame = objectMapper.readValue(response, Game.class);
+
+            assertNotNull(updatedGame);
+            assertEquals(GameStatus.Complete, updatedGame.getGameStatus());
         } catch (Exception e) {
             throw new RuntimeException("error running test: " + e.getMessage(), e);
         }

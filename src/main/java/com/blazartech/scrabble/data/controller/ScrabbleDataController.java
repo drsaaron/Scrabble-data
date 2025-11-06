@@ -10,11 +10,13 @@ import com.blazartech.scrabble.data.app.GamePlayerRound;
 import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
+import com.blazartech.scrabble.data.controller.JsonPatchSchema.Op;
 import com.blazartech.scrabble.data.process.AddScorePAB;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -27,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScrabbleDataController {
 
     private static final Logger log = LoggerFactory.getLogger(ScrabbleDataController.class);
-    
+
     @Autowired
     private ScrabbleDataAccess dal;
 
@@ -181,11 +184,12 @@ public class ScrabbleDataController {
                 })
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JsonPatchSchema.class))))
-    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+//    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
+    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonPatchSchema[] patch) throws JsonPatchException, JsonProcessingException {
         log.info("updating game {}", id);
 
         Game game = dal.getGame(id);
-        Game updatedGame = applyPatchToGame(patch, game);
+        /*     Game updatedGame = applyPatchToGame(patch, game);
         
         // sanity check
         if (game.getGameStatus() == GameStatus.Playing && updatedGame.getGameStatus() == GameStatus.Complete) {
@@ -194,13 +198,24 @@ public class ScrabbleDataController {
         } else {
             dal.updateGame(updatedGame);
             return updatedGame;
+        }*/
+
+        // hack around the problems with the patch system.  the changes to jackson packages breaks this process
+        // does the patch include an update to the status?
+        boolean gameUpdate = Stream.of(patch).anyMatch(p -> p.op == Op.replace && p.path.equals("/gameStatus") && p.value.equals("Complete"));
+        if (gameUpdate) {
+//            game.setGameStatus(GameStatus.Complete);
+            gameComplete.markGameComplete(game);
         }
+
+        return game;
+
     }
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    
+
     private Game applyPatchToGame(JsonPatch patch, Game game) throws JsonPatchException, JsonProcessingException {
-        JsonNode patched = patch.apply(objectMapper.convertValue(game, JsonNode.class));
+        JsonNode patched = patch.apply(objectMapper.convertValue(game, TextNode.class));
         return objectMapper.treeToValue(patched, Game.class);
     }
 
