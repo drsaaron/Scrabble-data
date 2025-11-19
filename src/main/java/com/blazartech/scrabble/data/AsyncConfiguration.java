@@ -10,6 +10,7 @@ import org.springframework.boot.tomcat.TomcatProtocolHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.core.task.support.TaskExecutorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -25,14 +26,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 )
 public class AsyncConfiguration {
     @Bean
-    public AsyncTaskExecutor applicationTaskExecutor() {
+    public AsyncTaskExecutor taskExecutor() {
         return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
     }
 
     @Bean
-    public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() {
-        return protocolHandler -> {
-            protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        };
+    public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer(TaskExecutor taskExecutor) {
+        return protocolHandler -> protocolHandler.setExecutor(taskExecutor);
     }
 }
