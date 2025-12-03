@@ -48,10 +48,8 @@ public class GameEntity implements Serializable {
     private Character stsCde;
     @Basic(optional = true)
     @Column(name = "StartDtm", columnDefinition = "timestamp default current_timestamp")
-
     private Date startDtm;
     @Column(name = "EndDtm")
-
     private Date endDtm;
     @OneToMany(mappedBy = "highGameId")
     private Collection<PlayerEntity> playerCollection;
