@@ -20,8 +20,6 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -50,10 +48,10 @@ public class GameEntity implements Serializable {
     private Character stsCde;
     @Basic(optional = true)
     @Column(name = "StartDtm", columnDefinition = "timestamp default current_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date startDtm;
     @Column(name = "EndDtm")
-    @Temporal(TemporalType.TIMESTAMP)
+
     private Date endDtm;
     @OneToMany(mappedBy = "highGameId")
     private Collection<PlayerEntity> playerCollection;
