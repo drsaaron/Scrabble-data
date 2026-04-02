@@ -13,7 +13,6 @@ import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.data.process.AddScorePAB;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.flipkart.zjsonpatch.Jackson3JsonPatch;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +22,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonPatch;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +38,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -180,7 +182,7 @@ public class ScrabbleDataController {
                 })
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JsonPatchSchema.class))))
-    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonNode patch) throws JsonProcessingException {
+    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonArray patch) throws JsonProcessingException {
         log.info("updating game {}", id);
 
         Game game = dal.getGame(id);
@@ -194,24 +196,16 @@ public class ScrabbleDataController {
             dal.updateGame(updatedGame);
             return updatedGame;
         }
-
-        // hack around the problems with the patch system.  the changes to jackson packages breaks this process
-        // does the patch include an update to the status?
-/*        boolean gameUpdate = Stream.of(patch).anyMatch(p -> p.op == Op.replace && p.path.equals("/gameStatus") && p.value.equals("Complete"));
-        if (gameUpdate) {
-//            game.setGameStatus(GameStatus.Complete);
-            gameComplete.markGameComplete(game);
-        }
-
-        return game; */
     }
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Game applyPatchToGame(JsonNode patch, Game game) throws JsonProcessingException {
-        JsonNode patched = Jackson3JsonPatch.apply(patch, objectMapper.convertValue(game, JsonNode.class));
-        return objectMapper.treeToValue(patched, Game.class);
+    private Game applyPatchToGame(JsonArray patch, Game game) throws JsonProcessingException {
+        JsonPatch jsonPatch = Json.createPatch(patch);
+        JsonObject gameObject = objectMapper.convertValue(game, JsonObject.class);
+        JsonObject patched = jsonPatch.apply(gameObject); 
+        return objectMapper.readValue(patched.toString(), Game.class);
     }
 
     @PostMapping("/gamePlayer")

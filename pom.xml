@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>ScrabbleData</artifactId>
-    <version>2.34-RELEASE</version>
+    <version>2.35-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -111,10 +111,17 @@
         
         <!-- JSON patch for completing a game -->
         <dependency>
-            <groupId>io.github.vishwakarma</groupId>
-            <artifactId>zjsonpatch</artifactId>
-            <version>0.6.2</version>
+            <groupId>tools.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jakarta-jsonp</artifactId>
+            <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.parsson</groupId>
+            <artifactId>parsson</artifactId>
+            <version>1.1.7</version>
+        </dependency>
+        
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
