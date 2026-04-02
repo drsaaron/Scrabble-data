@@ -4,40 +4,21 @@
  */
 package com.blazartech.scrabble.data.app;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 
 /**
  *
  * @author scott
  */
-public class Player {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Player extends ScrabbleData {
     
-    private Integer id;
     private String name;
     private Integer highGameId;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getHighGameId() {
-        return highGameId;
-    }
-
-    public void setHighGameId(Integer highGameId) {
-        this.highGameId = highGameId;
-    }
-    
-    
 }
