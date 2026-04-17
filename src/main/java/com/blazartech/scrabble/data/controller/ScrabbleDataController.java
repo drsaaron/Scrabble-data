@@ -12,7 +12,6 @@ import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import com.blazartech.scrabble.data.process.AddScorePAB;
 import com.blazartech.scrabble.data.process.GameCompletePAB;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -182,7 +181,7 @@ public class ScrabbleDataController {
                 })
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JsonPatchSchema.class))))
-    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonArray patch) throws JsonProcessingException {
+    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonArray patch) {
         log.info("updating game {}", id);
 
         Game game = dal.getGame(id);
@@ -201,7 +200,7 @@ public class ScrabbleDataController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Game applyPatchToGame(JsonArray patch, Game game) throws JsonProcessingException {
+    private Game applyPatchToGame(JsonArray patch, Game game) {
         JsonPatch jsonPatch = Json.createPatch(patch);
         JsonObject gameObject = objectMapper.convertValue(game, JsonObject.class);
         JsonObject patched = jsonPatch.apply(gameObject); 
