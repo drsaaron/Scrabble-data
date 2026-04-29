@@ -137,6 +137,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>com.blazartech</groupId>
+            <artifactId>EnumWithDBValueBacking</artifactId>
+            <version>1.0-RELEASE</version>
+        </dependency>
     </dependencies>
 
     <repositories>

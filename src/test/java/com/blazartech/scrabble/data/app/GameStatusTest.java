@@ -62,7 +62,7 @@ public class GameStatusTest {
         char dbValue = 'Q';
         
         Exception e = assertThrows(IllegalArgumentException.class, () -> GameStatus.findByDBValue(dbValue));
-        assertTrue(e.getMessage().startsWith("no value found"));
+        assertTrue(e.getMessage().startsWith("no enum found for db value"));
     }
     
 }

@@ -4,13 +4,13 @@
  */
 package com.blazartech.scrabble.data.app;
 
-import java.util.stream.Stream;
+import com.blazartech.enumwithdbvaluebacking.EnumWithDBValueBacking;
 
 /**
  *
  * @author scott
  */
-public enum GameStatus {
+public enum GameStatus implements EnumWithDBValueBacking<Character> {
     
     Playing('P'), Complete('C');
     
@@ -21,13 +21,11 @@ public enum GameStatus {
     }
     
     public static GameStatus findByDBValue(char dbValue) {
-        return Stream.of(values())
-                .filter(v -> v.getDBValue() == dbValue)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("no value found for " + dbValue));
+        return EnumWithDBValueBacking.getFromDBValue(GameStatus.class, dbValue);
     }
     
-    public char getDBValue() {
+    @Override
+    public Character getDBValue() {
         return dbValue;
     }
 }
