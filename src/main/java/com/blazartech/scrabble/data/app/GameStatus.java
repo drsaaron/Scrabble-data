@@ -4,6 +4,8 @@
  */
 package com.blazartech.scrabble.data.app;
 
+import java.util.stream.Stream;
+
 /**
  *
  * @author scott
@@ -12,19 +14,17 @@ public enum GameStatus {
     
     Playing('P'), Complete('C');
     
-    private char dbValue;
-    GameStatus(char dbValue) {
+    private final char dbValue;
+    
+    private GameStatus(char dbValue) {
         this.dbValue = dbValue;
     }
     
     public static GameStatus findByDBValue(char dbValue) {
-        for (GameStatus s : values()) {
-            if (s.dbValue == dbValue) {
-                return s;
-            }
-        }
-        
-        throw new IllegalArgumentException("no value found for " + dbValue);
+        return Stream.of(values())
+                .filter(v -> v.getDBValue() == dbValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("no value found for " + dbValue));
     }
     
     public char getDBValue() {
