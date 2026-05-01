@@ -17,9 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -55,7 +53,6 @@ public class GamePlayerRoundEntity implements Serializable {
     private String noteTxt;
     @Basic(optional = true)
     @Column(name = "RowCreateDtm", columnDefinition = "timestamp default current_timestamp")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date rowCreateDtm;
     @JoinColumn(name = "GamePlayerId", referencedColumnName = "GamePlayerId")
     @ManyToOne(optional = false)
