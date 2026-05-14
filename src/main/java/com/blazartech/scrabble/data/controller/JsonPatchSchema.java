@@ -24,5 +24,5 @@ public class JsonPatchSchema {
     public String path;
 
     @NotBlank
-    public String value;
+    public Object value;
 }

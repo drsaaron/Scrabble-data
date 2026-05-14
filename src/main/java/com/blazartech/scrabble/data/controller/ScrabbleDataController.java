@@ -25,6 +25,8 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonPatch;
+import jakarta.json.JsonReader;
+import java.io.StringReader;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -181,7 +184,7 @@ public class ScrabbleDataController {
                 })
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(array = @ArraySchema(schema = @Schema(implementation = JsonPatchSchema.class))))
-    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody JsonArray patch) {
+    public Game markGameComplete(@Parameter(description = "game ID") @PathVariable int id, @RequestBody List<JsonPatchSchema> patch) {
         log.info("updating game {}", id);
 
         Game game = dal.getGame(id);
@@ -199,9 +202,15 @@ public class ScrabbleDataController {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    private JsonArray buildJsonArray(List<JsonPatchSchema> patches) {
+        JsonNode node = objectMapper.valueToTree(patches);
+        JsonReader reader = Json.createReader(new StringReader(node.toString()));
+        return reader.readArray();
+    }
 
-    private Game applyPatchToGame(JsonArray patch, Game game) {
-        JsonPatch jsonPatch = Json.createPatch(patch);
+    private Game applyPatchToGame(List<JsonPatchSchema> patch, Game game) {
+        JsonPatch jsonPatch = Json.createPatch(buildJsonArray(patch));
         JsonObject gameObject = objectMapper.convertValue(game, JsonObject.class);
         JsonObject patched = jsonPatch.apply(gameObject); 
         return objectMapper.readValue(patched.toString(), Game.class);
