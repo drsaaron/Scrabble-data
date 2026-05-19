@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>ScrabbleData</artifactId>
-    <version>2.37-RELEASE</version>
+    <version>2.38-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
     <parent>  
         <groupId>com.blazartech</groupId>           
         <artifactId>blazarjavaparent</artifactId>           
-        <version>1.21-RELEASE</version>     
+        <version>1.22-RELEASE</version>     
     </parent> 
     
     <dependencies>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.66-RELEASE</version>
+            <version>1.67-RELEASE</version>
         </dependency>
         
         <dependency>
@@ -198,7 +198,7 @@
             <plugin>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.5</version>
                 <executions>
                     <execution>
                         <phase>integration-test</phase>
