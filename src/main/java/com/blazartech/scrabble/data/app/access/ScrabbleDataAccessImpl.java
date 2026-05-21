@@ -57,7 +57,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
 
             Game game = new Game();
             game.setEndTimestamp(g.getEndDtm());
-            game.setGameStatus(GameStatus.findByDBValue(g.getStsCde()));
+            game.setGameStatus(g.getStsCde());
             game.setId(g.getGameId());
             game.setStartTimestamp(g.getStartDtm());
 
@@ -82,7 +82,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         GameEntity ge = new GameEntity();
         ge.setEndDtm(g.getEndTimestamp());
         ge.setStartDtm(g.getStartTimestamp());
-        ge.setStsCde(g.getGameStatus().getDBValue());
+        ge.setStsCde(g.getGameStatus());
         ge.setGameId(g.getId());
 
         if (g.getWinnerPlayerId() != null) {

@@ -6,9 +6,10 @@
         <class>com.blazartech.scrabble.data.entity.GameEntity</class>
         <class>com.blazartech.scrabble.data.entity.GamePlayerEntity</class>
         <class>com.blazartech.scrabble.data.entity.GamePlayerRoundEntity</class>
+        <class>com.blazartech.scrabble.data.entity.GameStatusConverter</class>
     </persistence-unit>
     <properties>
-        <property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
-        <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+        <property name="javax.persistence.schema-generation.database.action" value="none" />
+        <property name="hibernate.hbm2ddl.auto" value="none" />
     </properties>
 </persistence>

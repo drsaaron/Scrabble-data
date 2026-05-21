@@ -4,12 +4,14 @@
  */
 package com.blazartech.scrabble.data.entity;
 
+import com.blazartech.scrabble.data.app.GameStatus;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,18 +46,25 @@ public class GameEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "GameId")
     private Integer gameId;
+    
     @Column(name = "StsCde")
-    private Character stsCde;
+    @Convert(converter = GameStatusConverter.class)
+    private GameStatus stsCde;
+    
     @Basic(optional = true)
     @Column(name = "StartDtm", columnDefinition = "timestamp default current_timestamp")
     private Date startDtm;
+    
     @Column(name = "EndDtm")
     private Date endDtm;
+    
     @OneToMany(mappedBy = "highGameId")
     private Collection<PlayerEntity> playerCollection;
+    
     @JoinColumn(name = "WinnerId", referencedColumnName = "PlayerId")
     @ManyToOne
     private PlayerEntity winnerId;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gameId")
     private Collection<GamePlayerEntity> gamePlayerCollection;
 
@@ -79,11 +88,11 @@ public class GameEntity implements Serializable {
         this.gameId = gameId;
     }
 
-    public Character getStsCde() {
+    public GameStatus getStsCde() {
         return stsCde;
     }
 
-    public void setStsCde(Character stsCde) {
+    public void setStsCde(GameStatus stsCde) {
         this.stsCde = stsCde;
     }
 

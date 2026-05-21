@@ -4,7 +4,9 @@
  */
 package com.blazartech.scrabble.data.entity.repos;
 
+import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.entity.GameEntity;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -16,4 +18,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameEntityRepository extends JpaRepository<GameEntity, Integer>, JpaSpecificationExecutor<GameEntity> {
     
+    public List<GameEntity> findByStsCde(GameStatus stsCde);
 }

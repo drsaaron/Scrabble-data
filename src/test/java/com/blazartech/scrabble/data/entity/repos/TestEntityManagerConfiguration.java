@@ -5,6 +5,7 @@
  */
 package com.blazartech.scrabble.data.entity.repos;
 
+import java.util.Properties;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,17 @@ public class TestEntityManagerConfiguration {
         f.setJpaVendorAdapter(jpaVendorDapter);
         f.setPersistenceUnitName("test_com.blazartech_Scrabble-data_jar_1.0-SNAPSHOTPU");
 
+        /* do not auto-create tables.  Because I've changed the GameEntity bean to use
+           an enumeration property with a converter, auto-creating the table adds a check
+           constraint on the StsCde.  That check constraint looks perfectly fine.  But
+           inserting into the table fails becuase the constraint is violated.  AFter trying
+           many things to fix the constraint or understand why it's failinbg, I give up
+           and will just create the tables in an init script without the check constraint.
+        */
+        Properties props = new Properties();
+        props.setProperty("hibernate.hbm2ddl.auto", "none");
+        f.setJpaProperties(props);
+        
         return f;
     }
 }
