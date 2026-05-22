@@ -13,7 +13,7 @@ import jakarta.persistence.Converter;
  * @author scott
  */
 @Converter
-public class GameStatusConverter extends EnumWithDBValueBackingConverter<GameStatus, Character> {
+public class GameStatusConverter extends EnumWithDBValueBackingConverter<GameStatus, String> {
     
     public GameStatusConverter() {
         super(GameStatus.class);

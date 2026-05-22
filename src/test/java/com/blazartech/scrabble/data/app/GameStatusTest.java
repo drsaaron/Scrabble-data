@@ -49,7 +49,7 @@ public class GameStatusTest {
     public void testFindByDBValue() {
         log.info("findByDBValue");
         
-        char dbValue = 'P';
+        String dbValue = "P";
         GameStatus expResult = Playing;
         GameStatus result = GameStatus.findByDBValue(dbValue);
         assertEquals(expResult, result);
@@ -59,7 +59,7 @@ public class GameStatusTest {
     public void testFindByDBValue_invalid() {
         log.info("findByDBValue_invalid");
         
-        char dbValue = 'Q';
+        String dbValue = "Q";
         
         Exception e = assertThrows(IllegalArgumentException.class, () -> GameStatus.findByDBValue(dbValue));
         assertTrue(e.getMessage().startsWith("no enum found for db value"));

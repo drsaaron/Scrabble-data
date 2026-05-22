@@ -10,22 +10,22 @@ import com.blazartech.enumwithdbvaluebacking.EnumWithDBValueBacking;
  *
  * @author scott
  */
-public enum GameStatus implements EnumWithDBValueBacking<Character> {
+public enum GameStatus implements EnumWithDBValueBacking<String> {
     
-    Playing('P'), Complete('C');
+    Playing("P"), Complete("C");
     
-    private final char dbValue;
+    private final String dbValue;
     
-    private GameStatus(char dbValue) {
+    private GameStatus(String dbValue) {
         this.dbValue = dbValue;
     }
     
-    public static GameStatus findByDBValue(char dbValue) {
+    public static GameStatus findByDBValue(String dbValue) {
         return EnumWithDBValueBacking.getFromDBValue(GameStatus.class, dbValue);
     }
     
     @Override
-    public Character getDBValue() {
+    public String getDBValue() {
         return dbValue;
     }
 }
