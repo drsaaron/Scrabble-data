@@ -7,7 +7,6 @@ package com.blazartech.scrabble.data.app.access;
 import com.blazartech.scrabble.data.app.Game;
 import com.blazartech.scrabble.data.app.GamePlayer;
 import com.blazartech.scrabble.data.app.GamePlayerRound;
-import com.blazartech.scrabble.data.app.GameStatus;
 import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.entity.GameEntity;
 import com.blazartech.scrabble.data.entity.GamePlayerEntity;
@@ -38,7 +37,7 @@ import org.springframework.stereotype.Service;
 public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
 
     private static final Logger log = LoggerFactory.getLogger(ScrabbleDataAccessImpl.class);
-    
+
     @Autowired
     private GameEntityRepository gameRepository;
 
@@ -127,7 +126,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         ge.setStartDtm(new Date());
 
         // save
-        gameRepository.save(ge);
+        gameRepository.saveAndFlush(ge);
         log.info("saved game {}", ge);
 
         // get the updated data
@@ -144,7 +143,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         }
 
         GameEntity ge = buildGameEntity(g);
-        gameRepository.save(ge);
+        gameRepository.saveAndFlush(ge);
     }
 
     @Override
@@ -165,7 +164,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         GamePlayerEntity gpe = new GamePlayerEntity();
         buildGamePlayerEntity(gamePlayer, gpe);
 
-        gamePlayerRepository.save(gpe);
+        gamePlayerRepository.saveAndFlush(gpe);
 
         gamePlayer.setId(gpe.getGamePlayerId());
 
@@ -181,7 +180,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
             GamePlayerEntity gpe = gpeo.get();
 
             buildGamePlayerEntity(gamePlayer, gpe);
-            gamePlayerRepository.save(gpe);
+            gamePlayerRepository.saveAndFlush(gpe);
         }
     }
 
@@ -230,17 +229,15 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
     public List<GamePlayer> getGamePlayersForGame(int gameId) {
         log.info("getting players for game {}", gameId);
 
-        Optional<GameEntity> ge = gameRepository.findById(gameId);
-        if (ge.isPresent()) {
-            Collection<GamePlayerEntity> playersE = ge.get().getGamePlayerCollection();
-            if (playersE != null) {
-                List<GamePlayer> players = playersE.stream()
-                        .map(e -> buildGamePlayer(e))
-                        .sorted((p1, p2) -> Integer.compare(p1.getSequenceNumber(), p2.getSequenceNumber()))
-                        .collect(Collectors.toList());
-                return players;
-            }
+        Collection<GamePlayerEntity> playersE = gamePlayerRepository.findByGameId(gameId);
+        if (playersE != null) {
+            List<GamePlayer> players = playersE.stream()
+                    .map(e -> buildGamePlayer(e))
+                    .sorted((p1, p2) -> Integer.compare(p1.getSequenceNumber(), p2.getSequenceNumber()))
+                    .collect(Collectors.toList());
+            return players;
         }
+
         return new ArrayList<>();
     }
 
@@ -292,7 +289,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         PlayerEntity pe = new PlayerEntity();
         buildPlayerEntity(player, pe);
 
-        playerRepository.save(pe);
+        playerRepository.saveAndFlush(pe);
 
         player.setId(pe.getPlayerId());
 
@@ -320,7 +317,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         PlayerEntity pe = peo.get();
         buildPlayerEntity(player, pe);
 
-        playerRepository.save(pe);
+        playerRepository.saveAndFlush(pe);
     }
 
     @Override
@@ -378,7 +375,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         log.info("adding player round {}", round);
 
         GamePlayerRoundEntity gpre = buildGamePlayerRoundEntity(round);
-        gamePlayerRoundRepository.save(gpre);
+        gamePlayerRoundRepository.saveAndFlush(gpre);
 
         round.setId(gpre.getGamePlayerRoundId());
 
@@ -417,7 +414,7 @@ public class ScrabbleDataAccessImpl implements ScrabbleDataAccess {
         log.info("updating gamePlayerRound {}", round);
 
         GamePlayerRoundEntity gpre = buildGamePlayerRoundEntity(round);
-        gamePlayerRoundRepository.save(gpre);
+        gamePlayerRoundRepository.saveAndFlush(gpre);
     }
 
     @Override

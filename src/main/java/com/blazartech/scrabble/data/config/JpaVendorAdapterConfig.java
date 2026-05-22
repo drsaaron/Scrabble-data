@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 
 /**
  *
@@ -22,15 +22,11 @@ public class JpaVendorAdapterConfig {
     @Value("${scrabble.config.jpa.vendorType:MYSQL}")
     private String vendorType;
 
-    @Value("${app.jpa.dialect}")
-    private String dbDialect;
-
     @Bean
-    public JpaVendorAdapter getJpaVendorAdapter() {
-        HibernateJpaVendorAdapter va  = new HibernateJpaVendorAdapter();
+    public JpaVendorAdapter jpaVendorAdaptor() {
+        EclipseLinkJpaVendorAdapter va = new EclipseLinkJpaVendorAdapter();
         va.setShowSql(true);
         va.setDatabase(Database.valueOf(vendorType));
-        va.setDatabasePlatform(dbDialect);
         va.setGenerateDdl(true);
         return va;
     }
