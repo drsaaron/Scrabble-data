@@ -133,6 +133,7 @@ public class GameCompletePABImplTest {
         // high scores should be updated
         players = dal.getGamePlayersForGame(gameId);
         players.stream()
+                .filter(p -> p.getPlayerId() != 1) // we've explicitly set the high game for player 1 in the SQL init, so don't check
                 .map(p -> dal.getPlayer(p.getPlayerId()))
                 .forEach(p -> {
                     assertNotNull(p.getHighGameId());

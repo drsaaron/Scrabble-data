@@ -9,7 +9,10 @@
         <class>com.blazartech.scrabble.data.entity.GameStatusConverter</class>
     </persistence-unit>
     <properties>
-        <property name="javax.persistence.schema-generation.database.action" value="none" />
-        <property name="hibernate.hbm2ddl.auto" value="none" />
+        <!-- Enables automatic table creation/updates -->
+        <property name="eclipselink.ddl-generation" value="create-tables" />
+        
+        <!-- Specifies where the DDL should be applied (the database) -->
+        <property name="eclipselink.ddl-generation.output-mode" value="database" />
     </properties>
 </persistence>
