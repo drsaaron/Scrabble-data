@@ -9,9 +9,11 @@ import com.blazartech.scrabble.data.config.TransactionManagerConfig;
 import com.blazartech.scrabble.data.entity.GamePlayerEntity;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
+import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,4 +85,51 @@ public class GamePlayerEntityRepositoryTest {
         assertEquals(2, result.size());
     }
     
+    @Test
+    @Sql("classpath:gamePlayerEntityTest.sql")
+    public void testFindByGameIdAndOrderSeq() {
+        log.info("findByGameIdAndOrderSeq");
+        
+        int gameId = 1;
+        int orderSeq = 1;
+        
+        Optional<GamePlayerEntity> result = instance.findByGameIdAndOrderSeq(gameId, orderSeq);
+        
+        assertTrue(result.isPresent());
+        assertEquals("Scott", result.get().getPlayerId().getNameTxt());
+    }
+    
+    @Test
+    @Sql("classpath:gamePlayerEntityTest.sql")
+    public void testFindByGameAndPlayer() {
+        log.info("findByGameAndPlayer");
+        
+        int gameId = 1;
+        int playerId = 2;
+        
+        Optional<GamePlayerEntity> result = instance.findByGameAndPlayer(gameId, playerId);
+        
+        assertTrue(result.isPresent());
+        assertEquals("Roberta", result.get().getPlayerId().getNameTxt());
+        
+        result = instance.findByGameAndPlayer(gameId, 3);
+        assertTrue(result.isEmpty());
+    }
+    
+    @Test
+    @Sql("classpath:gamePlayerEntityTest.sql")
+    public void testFindByGameId_GameIdAndPlayerId_PlayerId() {
+        log.info("findByGameId_GameIdAndPlayerId_PlayerId");
+        
+        int gameId = 1;
+        int playerId = 2;
+        
+        Optional<GamePlayerEntity> result = instance.findByGameId_GameIdAndPlayerId_PlayerId(gameId, playerId);
+        
+        assertTrue(result.isPresent());
+        assertEquals("Roberta", result.get().getPlayerId().getNameTxt());
+        
+        result = instance.findByGameId_GameIdAndPlayerId_PlayerId(gameId, 3);
+        assertTrue(result.isEmpty());
+    }
 }

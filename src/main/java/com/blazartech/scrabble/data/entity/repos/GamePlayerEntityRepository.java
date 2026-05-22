@@ -20,6 +20,16 @@ import org.springframework.stereotype.Repository;
 public interface GamePlayerEntityRepository extends JpaRepository<GamePlayerEntity, Integer>, JpaSpecificationExecutor<GamePlayerEntity> {
     
     public Collection<GamePlayerEntity> findByGameId(@Param("gameId") int gameId);
-    public Collection<GamePlayerEntity> findByGameAndPlayer(@Param("gameId") int gameId, @Param("playerId") int playerId);
+    public Optional<GamePlayerEntity> findByGameAndPlayer(@Param("gameId") int gameId, @Param("playerId") int playerId);
     public Optional<GamePlayerEntity> findByGameIdAndOrderSeq(@Param("gameId") int gameId, @Param("orderSeq") int orderSeq);
+    
+    /**
+     * an alternative to findByGameAndPlayer using spring JPA to create the query.  The _ aspect 
+     * tells spring JPA to use nested properties
+     * 
+     * @param gameId
+     * @param playerId
+     * @return 
+     */
+    public Optional<GamePlayerEntity> findByGameId_GameIdAndPlayerId_PlayerId(int gameId, int playerId);
 }
