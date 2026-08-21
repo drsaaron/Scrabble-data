@@ -11,7 +11,6 @@ import com.blazartech.scrabble.data.app.Player;
 import com.blazartech.scrabble.data.app.access.ScrabbleDataAccess;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,8 @@ public class GameCompleteHandlerImpl implements GameCompleteHandler {
     public int getTotalScore(Collection<GamePlayerRound> rounds) {
         return rounds.stream()
                 .peek(r -> log.info("accumulating round {}", r))
-                .map(r -> r.getScore())
-                .collect(Collectors.summingInt(Integer::intValue));
+                .mapToInt(GamePlayerRound::getScore)
+                .sum();
     }
 
     public boolean isNewHighScore(Player p, int score) {

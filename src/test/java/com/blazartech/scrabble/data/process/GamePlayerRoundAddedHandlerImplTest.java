@@ -105,7 +105,7 @@ public class GamePlayerRoundAddedHandlerImplTest {
     @Test
     @Sql("classpath:dalTest.sql")
     public void testHandleGamePlayerRoundAdded() {
-        System.out.println("handleGamePlayerRoundAdded");
+        log.info("handleGamePlayerRoundAdded");
         
         // read round 1001, which is the final round in the test setup
         int gamePlayerRoundId = 1001;
@@ -120,9 +120,9 @@ public class GamePlayerRoundAddedHandlerImplTest {
         assertEquals(expectedScore, round.getRollingScore());
         
         // re-read from DB and validate it's been updated there too
-    /*    GamePlayerRound updatedRound = dal.getGamePlayerRound(gamePlayerRoundId);
+        GamePlayerRound updatedRound = dal.getGamePlayerRound(gamePlayerRoundId);
         assertNotNull(updatedRound.getRollingScore());
-        assertEquals(expectedScore, updatedRound.getRollingScore());*/
+        assertEquals(expectedScore, updatedRound.getRollingScore());
     }
     
 }
