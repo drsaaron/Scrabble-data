@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>ScrabbleData</artifactId>
-    <version>2.43-RELEASE</version>
+    <version>2.44-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
     <parent>  
         <groupId>com.blazartech</groupId>           
         <artifactId>blazarjavaparent</artifactId>           
-        <version>1.27-RELEASE</version>     
+        <version>1.28-RELEASE</version>     
     </parent> 
     
     <dependencies>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
         
         <!-- actuator -->
@@ -141,16 +141,11 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
         
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>EnumWithDBValueBacking</artifactId>
-            <version>1.6-RELEASE</version>
+            <version>1.7-RELEASE</version>
         </dependency>
     </dependencies>
 
