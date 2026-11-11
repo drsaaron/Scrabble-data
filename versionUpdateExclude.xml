@@ -4,6 +4,7 @@
   <ignoreVersions>
     <ignoreVersion type="regex">.*-beta</ignoreVersion>
     <ignoreVersion type="regex">.*-RC\d*</ignoreVersion>
+    <ignoreVersion type="regex">.*-M\d*</ignoreVersion>
   </ignoreVersions>
   <rules>
     <rule groupId="org.hibernate.orm" comparisonMethod="maven">
